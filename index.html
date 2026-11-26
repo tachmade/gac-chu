@@ -14,6 +14,10 @@
 <link rel="preload" as="image" href="https://images.unsplash.com/photo-1508383696188-90b183ebdd47?auto=format&fit=crop&w=2000&q=72" fetchpriority="high">
 <link rel="stylesheet" href="scrollcraft.css">
 <style>
+  /* Engine ghi --sc-p lên từng act mỗi khung hình. Không CSS nào đọc nó ở phần tử con, nên khai báo không kế thừa
+     để trình duyệt không phải tính lại style cho cả cây con mỗi lần cuộn (nguyên nhân chính gây khựng). */
+  @property --sc-p { syntax: "*"; inherits: false; }
+  @property --read { syntax: "*"; inherits: false; }
   :root {
     --sc-canvas:     #F1F1EE;
     --sc-surface:    #E6E7E2;
@@ -1084,17 +1088,18 @@ ScrollCraft.mount(document.body);
     }
   })();
   var openings = Array.prototype.slice.call(document.querySelectorAll('[data-open]')).map(function (el) {
-    return { el: el, kind: el.getAttribute('data-open'), fig: el.querySelector('.opening__fig') };
+    var fig = el.querySelector('.opening__fig');
+    return { el: el, kind: el.getAttribute('data-open'), fig: fig, media: fig && fig.querySelector('.media'), dim: fig && fig.querySelector('.dim'), sash: fig && fig.querySelector('.sash'), snap: fig && fig.querySelector('.snap'), r: null };
   });
   function drawOpening(o) {
-    var r = o.el.getBoundingClientRect(), vh = innerHeight;
+    var r = o.r, vh = innerHeight;
     if (r.bottom < -50 || r.top > vh + 50) return;
     // 0 khi mép trên chạm đáy màn hình, 1 khi chương phủ kín màn hình
     var e = clamp01((vh - r.top) / (vh * 0.92));
     var f = o.fig;
     if (o.kind === 'lamp') {
-      f.querySelector('.media').style.transform = 'scale(' + (1.28 - 0.28 * easeOut(e)).toFixed(4) + ')';
-      f.querySelector('.dim').style.opacity = (0.85 * (1 - smooth((e - 0.2) / 0.7))).toFixed(3);
+      o.media.style.transform = 'scale(' + (1.28 - 0.28 * easeOut(e)).toFixed(4) + ')';
+      o.dim.style.opacity = (0.85 * (1 - smooth((e - 0.2) / 0.7))).toFixed(3);
     } else if (o.kind === 'slats') {
       SL.forEach(function (s, i) {
         var k = easeOut((e - i * 0.06) / 0.55), dir = i % 2 ? 1 : -1;
@@ -1103,14 +1108,14 @@ ScrollCraft.mount(document.body);
       });
     } else if (o.kind === 'window') {
       var k = easeOut((e - 0.1) / 0.75), a = (1 - k);
-      f.querySelector('.media').style.clipPath = 'inset(' + (22 * a).toFixed(2) + '% ' + (26 * a).toFixed(2) + '% ' + (22 * a).toFixed(2) + '% ' + (26 * a).toFixed(2) + '%)';
-      var sash = f.querySelector('.sash');
+      o.media.style.clipPath = 'inset(' + (22 * a).toFixed(2) + '% ' + (26 * a).toFixed(2) + '% ' + (22 * a).toFixed(2) + '% ' + (26 * a).toFixed(2) + '%)';
+      var sash = o.sash;
       sash.style.transform = 'scale(' + (1 + 1.6 * k).toFixed(4) + ')';
       sash.style.opacity = (1 - smooth((k - 0.35) / 0.4)).toFixed(3);
     } else if (o.kind === 'snap') {
       var after = clamp01((-r.top) / vh);
-      f.querySelector('.media').style.transform = 'translate3d(0,' + ((e - 1) * 6 - after * 6).toFixed(2) + '%,0)';
-      var k2 = easeOut((e - 0.35) / 0.55), snap = f.querySelector('.snap');
+      o.media.style.transform = 'translate3d(0,' + ((e - 1) * 6 - after * 6).toFixed(2) + '%,0)';
+      var k2 = easeOut((e - 0.35) / 0.55), snap = o.snap;
       snap.style.transform = 'translate3d(' + ((1 - k2) * -40).toFixed(1) + 'px,' + ((1 - k2) * 140).toFixed(1) + 'px,0) rotate(' + (-3 + (1 - k2) * 14).toFixed(2) + 'deg)';
       snap.style.opacity = k2.toFixed(3);
     }
@@ -1121,31 +1126,43 @@ ScrollCraft.mount(document.body);
   var chapters = Array.prototype.slice.call(document.querySelectorAll('[data-chapter]'));
   var inks = Array.prototype.slice.call(document.querySelectorAll('[data-ink]'));
   var lastKey = '';
+  var lastY = -1, lastW = -1, lastH = -1, lastP = { x: 9, y: 9 }, lastInHero = null, lastFolio = null, lastInk = null, lastQuiet = null;
   function tick() {
-    var vh = innerHeight, y = scrollY, max = document.documentElement.scrollHeight - vh;
+    requestAnimationFrame(tick);
+    var vh = innerHeight, vw = innerWidth, y = scrollY;
+    var ptrMoving = Math.abs(ptr.tx - ptr.x) > 0.001 || Math.abs(ptr.ty - ptr.y) > 0.001;
+    // Trang đứng yên và chuột không đổi: không đọc, không ghi gì cả.
+    if (y === lastY && vw === lastW && vh === lastH && !ptrMoving) return;
+    lastY = y; lastW = vw; lastH = vh;
+
+    /* ---- pha ĐỌC: lấy hết vị trí trước khi ghi bất kỳ style nào (tránh layout thrashing) */
+    var max = document.documentElement.scrollHeight - vh;
+    var hr = hero.getBoundingClientRect();
+    var heroP = clamp01(parseFloat(hero.style.getPropertyValue('--sc-p')) || 0);
+    openings.forEach(function (o) { o.r = o.el.getBoundingClientRect(); });
+    var mid = vh * 0.5, chapterKey = null;
+    for (var i = 0; i < chapters.length; i++) {
+      var cr = chapters[i].getBoundingClientRect();
+      if (cr.top <= mid && cr.bottom > mid) { chapterKey = chapters[i].getAttribute('data-chapter'); break; }
+    }
+    var fx = 24, fy = 40, onInk = false;
+    for (var j = 0; j < inks.length; j++) { var ir = inks[j].getBoundingClientRect(); if (ir.top <= fy && ir.bottom > fy && ir.left <= fx && ir.right > fx) { onInk = true; break; } }
+    var qp = parseFloat(quietAct.style.getPropertyValue('--sc-p')) || 0, qr = quietAct.getBoundingClientRect();
+
+    /* ---- pha GHI */
     ribbon.style.setProperty('--read', max > 0 ? clamp01(y / max).toFixed(4) : 0);
-    var hr = hero.getBoundingClientRect(), inHero = hr.bottom > vh * 0.4;
-    document.body.classList.toggle('in-hero', inHero);
-    folio.classList.toggle('is-on', !inHero);
+    var inHero = hr.bottom > vh * 0.4;
+    if (inHero !== lastInHero) { lastInHero = inHero; document.body.classList.toggle('in-hero', inHero); folio.classList.toggle('is-on', !inHero); }
     if (!reduce) {
-      if (hr.bottom > 0) drawHero(clamp01(parseFloat(hero.style.getPropertyValue('--sc-p')) || 0));
+      if (hr.bottom > 0) drawHero(heroP);
       openings.forEach(drawOpening);
     }
-    var mid = vh * 0.5;
-    for (var i = 0; i < chapters.length; i++) {
-      var r = chapters[i].getBoundingClientRect();
-      if (r.top <= mid && r.bottom > mid) {
-        var key = chapters[i].getAttribute('data-chapter');
-        if (key !== lastKey) { lastKey = key; var kv = key.split('|'); $('folio-no').textContent = kv[0]; $('folio-title').textContent = kv[1]; }
-        break;
-      }
-    }
-    var fx = 24, fy = 40;
-    document.body.classList.toggle('on-ink', inks.some(function (el) { var r = el.getBoundingClientRect(); return r.top <= fy && r.bottom > fy && r.left <= fx && r.right > fx; }));
-    var qp = parseFloat(quietAct.style.getPropertyValue('--sc-p')) || 0, qr = quietAct.getBoundingClientRect();
-    document.body.classList.toggle('is-quiet', qr.top <= 1 && qr.bottom >= vh - 1 && qp > 0.03 && qp < 0.97);
+    if (chapterKey && chapterKey !== lastKey) { lastKey = chapterKey; var kv = chapterKey.split('|'); $('folio-no').textContent = kv[0]; $('folio-title').textContent = kv[1]; }
+    if (onInk !== lastInk) { lastInk = onInk; document.body.classList.toggle('on-ink', onInk); }
+    var quiet = qr.top <= 1 && qr.bottom >= vh - 1 && qp > 0.03 && qp < 0.97;
+    if (quiet !== lastQuiet) { lastQuiet = quiet; document.body.classList.toggle('is-quiet', quiet); }
     if (!reduce && qr.bottom > 0 && qr.top < vh) drawQuiet(qp);
-    requestAnimationFrame(tick);
+    if (ptrMoving) lastY = -1; // chuột còn trôi: khung sau vẫn phải vẽ lại hero
   }
   requestAnimationFrame(tick);
 })();
