@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gác Chữ, gác đọc sách trên phố Hàng Bông</title>
+<meta name="description" content="Ba nghìn cuốn sách, mười tám chỗ ngồi, và hai tiếng mỗi sáng không ai nói chuyện. Tìm sách, gấp góc và giữ một chỗ ngồi.">
+<meta name="theme-color" content="#1B1D23">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23F1F1EE'/><path d='M9 4h14v24l-7-5-7 5z' fill='%235B3E96'/></svg>">
+<link rel="preconnect" href="https://images.unsplash.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap">
+<link rel="preload" as="image" href="https://images.unsplash.com/photo-1508383696188-90b183ebdd47?auto=format&fit=crop&w=2000&q=72" fetchpriority="high">
+<link rel="stylesheet" href="scrollcraft.css">
+<style>
+  :root {
+    --sc-canvas:     #F1F1EE;
+    --sc-surface:    #E6E7E2;
+    --sc-ink:        #1B1D1F;
+    --sc-ink-soft:   #575B60;
+    --sc-accent:     #5B3E96;
+    --sc-accent-ink: #F1F1EE;
+    --sc-font-display: "Cormorant Garamond", "Newsreader", Georgia, serif;
+    --sc-font-text:    "Newsreader", Georgia, serif;
+    --sc-leading-body: 1.7;
+    --sc-measure: 60ch;
+    --wall: #1B1D23;
+    --sash: #2C2B30;
+    --lilac: #C9B8F0;
+    --card: #FBFAF6;
+    --shadow: 0 1px 1px hsl(240 10% 20% / 0.06), 0 6px 14px -4px hsl(240 12% 20% / 0.16), 0 18px 34px -12px hsl(250 16% 20% / 0.18);
+    --r: 2px;
+    --col-margin: 13rem;
+    --col-main: 38rem;
+    --col-side: 15rem;
+    --ribbon: clamp(8px, 1vw, 14px);
+  }
+  html { scroll-padding-top: 4rem; }
+  body { font-optical-sizing: auto; font-size: clamp(1.06rem, 1rem + 0.25vw, 1.2rem); }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .skip:focus { position: fixed; z-index: 100; left: 1rem; top: 1rem; width: auto; height: auto; clip: auto; padding: 0.6rem 1rem; background: var(--sc-canvas); }
+  .sc-grain { opacity: 0.05; mix-blend-mode: multiply; }
+
+  /* ------------------------------------------------------------ page grid */
+  .page {
+    display: grid;
+    grid-template-columns: var(--col-margin) minmax(0, var(--col-main)) var(--col-side);
+    column-gap: clamp(2rem, 4vw, 4.5rem);
+    max-width: calc(var(--col-margin) + var(--col-main) + var(--col-side) + 9rem);
+    margin-inline: auto;
+    padding-inline: var(--sc-gutter);
+  }
+  .page > * { grid-column: 2; }
+  .page > .side { grid-column: 3; }
+  .page > .wide { grid-column: 1 / -1; }
+  .chapter { padding-block: clamp(4rem, 9vw, 8rem) clamp(4rem, 8vw, 7rem); }
+
+  p { margin: 0; }
+  .prose > * + * { margin-top: 1.1em; }
+  .prose p { text-wrap: pretty; }
+  .prose p + p { margin-top: 0; text-indent: 1.6em; }
+  .prose .lead::first-letter {
+    float: left; font-family: var(--sc-font-display); font-weight: 500;
+    font-size: 5.1em; line-height: 0.78; margin: 0.08em 0.1em 0 -0.04em;
+    color: var(--sc-accent);
+  }
+  h2, h3 { font-weight: 400; margin: 0; text-wrap: balance; }
+  h3 { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-xl); letter-spacing: -0.01em; line-height: 1.1; margin-top: clamp(3rem, 6vw, 4.5rem); margin-bottom: 1rem; }
+  .kicker { font-family: var(--sc-font-display); font-style: italic; font-size: var(--sc-t-xl); line-height: 1.15; color: var(--sc-ink); margin-top: clamp(3.5rem, 7vw, 5.5rem) !important; }
+
+  a { text-decoration-color: color-mix(in oklab, currentColor 45%, transparent); transition: text-decoration-color 160ms var(--sc-ease-out), color 160ms var(--sc-ease-out); }
+  @media (hover: hover) and (pointer: fine) { a:hover { text-decoration-color: currentColor; color: var(--sc-accent); } }
+
+  /* ============================================== FRONTISPIECE: Ô CỬA GÁC */
+  .fx__stage { background: var(--wall); color: var(--sc-accent-ink); overflow: hidden; isolation: isolate; }
+  .fx__stage > * { position: absolute; }
+  .fx__far, .fx__glass { inset: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+  .fx__far { z-index: 1; object-position: 50% 62%; filter: saturate(0.72) contrast(1.04) brightness(0.92); transform: scale(1.14); }
+  .fx__glass { z-index: 2; mix-blend-mode: screen; opacity: 0.5; filter: grayscale(0.6) contrast(1.2); }
+  .fx__frame {
+    z-index: 3;
+    --ox: 47vw; --oy: 8vh; --ow: 46vw; --oh: 70vh;
+    left: var(--ox); top: var(--oy); width: var(--ow); height: var(--oh);
+    border: clamp(8px, 1vw, 16px) solid var(--sash);
+    box-shadow: inset 0 0 60px rgb(10 12 18 / 0.55), 0 0 0 250vmax var(--wall);
+    background:
+      linear-gradient(to right, transparent calc(50% - 5px), var(--sash) calc(50% - 5px), var(--sash) calc(50% + 5px), transparent calc(50% + 5px)),
+      linear-gradient(to bottom, transparent calc(36% - 4px), var(--sash) calc(36% - 4px), var(--sash) calc(36% + 4px), transparent calc(36% + 4px));
+    transform-origin: 50% 50%;
+    will-change: transform, opacity;
+  }
+  .fx__frame::after {
+    content: ""; position: absolute;
+    left: -4%; right: -4%; bottom: calc(-1 * clamp(8px, 1vw, 16px) - 3vh); height: 3vh;
+    background: #34333A;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 14px 28px rgb(6 8 12 / 0.55);
+  }
+  .fx__lamp { z-index: 4; inset: 0; pointer-events: none; background: radial-gradient(60vmax 50vmax at 6% 18%, rgb(255 214 160 / 0.13), transparent 70%); }
+  .fx__copy { z-index: 5; left: var(--sc-gutter); bottom: clamp(3rem, 12vh, 8rem); width: min(38vw, 34rem); will-change: transform, opacity; }
+  .fx__place { font-style: italic; color: color-mix(in oklab, var(--sc-accent-ink) 78%, var(--wall)); }
+  .fx h1 { margin: 0.6rem 0 0 -0.04em; font-family: var(--sc-font-display); font-weight: 300; font-size: clamp(4.5rem, 10.5vw, 11rem); line-height: 0.84; letter-spacing: -0.03em; }
+  .fx__lede { margin-top: 1.5rem; max-width: 30ch; font-size: var(--sc-t-lg); line-height: 1.45; text-wrap: balance; color: color-mix(in oklab, var(--sc-accent-ink) 90%, var(--wall)); }
+  .fx__links { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.25rem 2rem; }
+  .fx__links a { display: inline-block; padding-block: 0.6rem; }
+  .fx__links a:first-child { color: var(--lilac); }
+  @media (hover: hover) and (pointer: fine) { .fx__links a:hover { color: #fff; } }
+  .fx__near {
+    z-index: 6; right: 2vw; bottom: -6vh; width: min(34vw, 560px); height: auto;
+    -webkit-mask-image: radial-gradient(ellipse 46% 40% at 52% 60%, #000 52%, transparent 100%);
+            mask-image: radial-gradient(ellipse 46% 40% at 52% 60%, #000 52%, transparent 100%);
+    filter: brightness(0.78) contrast(1.12) saturate(0.85);
+    will-change: transform;
+  }
+  .fx__capwrap { z-index: 7; left: 0; right: 0; bottom: 0; height: 34vh; pointer-events: none; background: linear-gradient(to top, rgb(14 16 22 / 0.72), transparent); opacity: 0; }
+  .fx__caption { z-index: 8; left: var(--sc-gutter); bottom: clamp(2rem, 7vh, 4rem); max-width: 34ch; font-style: italic; font-size: var(--sc-t-lg); line-height: 1.4; color: var(--sc-accent-ink); opacity: 0; }
+
+  /* ---------------------------------------------------- chapter openings */
+  .opening { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); min-height: 100svh; background: var(--sc-accent); }
+  .opening__panel { --sc-ink: var(--sc-accent-ink); color: var(--sc-ink); display: grid; align-content: end; padding: clamp(3rem, 10vh, 7rem) var(--sc-gutter); position: relative; z-index: 2; }
+  .opening__no { font-style: italic; font-size: var(--sc-t-lg); color: color-mix(in oklab, var(--sc-accent-ink) 80%, var(--sc-accent)); }
+  .opening h2 { margin-top: 0.35rem; font-family: var(--sc-font-display); font-weight: 300; font-size: clamp(3.2rem, 7.4vw, 7.5rem); line-height: 0.92; letter-spacing: -0.02em; padding-bottom: 0.12em; }
+  .opening__lead { margin-top: 1.25rem; max-width: 28ch; color: color-mix(in oklab, var(--sc-accent-ink) 86%, var(--sc-accent)); }
+  .opening__fig { position: relative; margin: 0; overflow: hidden; background: #2a2440; }
+  .opening__fig > img, .media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .opening__fig figcaption { position: absolute; z-index: 5; left: 0; bottom: 0; max-width: 30ch; padding: 0.55rem 0.85rem; background: var(--sc-canvas); color: var(--sc-ink-soft); font-size: 0.8rem; font-style: italic; line-height: 1.4; }
+
+  /* 1. Đèn bật: ảnh lùi ra và sáng dần */
+  .k-lamp .media { transform: scale(1.28); transform-origin: 62% 40%; will-change: transform; }
+  .k-lamp .dim { position: absolute; inset: 0; background: #120f1c; opacity: 0.85; will-change: opacity; }
+  /* 2. Gáy sách: ảnh ghép từ những lát dọc, đẩy vào kệ so le */
+  .k-slats { display: flex; }
+  .slat { position: relative; flex: 1; overflow: hidden; will-change: transform, opacity; }
+  .slat img { position: absolute; top: 0; height: 100%; width: calc(var(--n) * 100%); left: calc(var(--i) * -100%); max-width: none; object-fit: cover; }
+  .slat + .slat { box-shadow: -1px 0 0 rgb(0 0 0 / 0.25); }
+  /* 3. Ô cửa: khẩu độ mở theo hình cửa sổ, song cửa phóng qua */
+  .k-window .media { will-change: clip-path; clip-path: inset(22% 26% 22% 26%); }
+  .k-window .sash { position: absolute; inset: 22% 26%; border: 12px solid #2a2440; will-change: transform, opacity;
+    background:
+      linear-gradient(to right, transparent calc(50% - 4px), #2a2440 calc(50% - 4px), #2a2440 calc(50% + 4px), transparent calc(50% + 4px)),
+      linear-gradient(to bottom, transparent calc(40% - 4px), #2a2440 calc(40% - 4px), #2a2440 calc(40% + 4px), transparent calc(40% + 4px)); }
+  /* 4. Ảnh chụp đặt lên bàn: ảnh lớn trôi chậm, ảnh nhỏ trượt vào và xoay về chỗ */
+  .k-snap .media { height: 116%; top: -8%; will-change: transform; }
+  .snap { position: absolute; z-index: 3; right: 7%; bottom: 12%; width: clamp(9rem, 15vw, 14rem); margin: 0;
+    padding: 0.55rem 0.55rem 1.8rem; background: var(--card); box-shadow: var(--shadow); will-change: transform, opacity; }
+  .snap img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; display: block; }
+  .snap span { position: absolute; left: 0.7rem; bottom: 0.4rem; font-family: var(--sc-font-display); font-style: italic; font-size: 0.95rem; color: var(--sc-ink-soft); }
+  .k-snap { overflow: visible; }
+  .k-snap .clip { position: absolute; inset: 0; overflow: hidden; }
+
+  /* --------------------------------------------------------- folio + ribbon */
+  .folio { position: fixed; z-index: 40; top: clamp(1.5rem, 4vw, 3rem); left: var(--sc-gutter); width: var(--col-margin); line-height: 1.35; font-size: 0.92rem; transition: opacity 420ms var(--sc-ease-out); opacity: 0; pointer-events: none; }
+  .folio.is-on { opacity: 1; pointer-events: auto; }
+  .folio__mark { font-family: var(--sc-font-display); font-size: 1.2rem; font-style: italic; text-decoration: none; display: inline-block; padding-block: 0.25rem; }
+  .folio__chapter { margin-top: 1.25rem; color: var(--sc-ink-soft); font-style: italic; }
+  .folio__title { font-size: 1.15rem; }
+  .folio__shelf { display: inline-block; margin-top: 1.25rem; padding-block: 0.4rem; }
+  .folio__shelf[hidden] { display: none; }
+  body.on-ink .folio { color: var(--sc-accent-ink); opacity: 0; pointer-events: none; }
+  body.on-ink .folio__chapter { color: color-mix(in oklab, var(--sc-accent-ink) 80%, var(--sc-accent)); }
+  .ribbon { position: fixed; z-index: 39; top: 0; right: clamp(10px, 3vw, 44px); width: var(--ribbon); height: 100vh; pointer-events: none; transform: translate3d(0, calc((var(--read, 0) - 1) * 100% + 2.5rem), 0); transition: opacity 420ms var(--sc-ease-out); }
+  .ribbon::before { content: ""; position: absolute; inset: 0; background: var(--sc-accent); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - var(--ribbon) * 0.9), 0 100%); }
+  body.on-ink .ribbon::before { background: var(--sc-accent-ink); }
+  body.is-quiet .folio, body.is-quiet .ribbon, body.in-hero .ribbon { opacity: 0.08; }
+
+  /* ---------------------------------------------- chương một: một ngày ở gác */
+  .day { margin-top: 1rem; }
+  .day__bar { position: relative; height: 4.5rem; display: block; margin: 0; padding: 0; list-style: none; border-radius: var(--r); background: var(--sc-surface); box-shadow: inset 0 1px 2px hsl(240 10% 20% / 0.1); }
+  .day__seg { position: absolute; top: 0; bottom: 0; left: calc((var(--a) - 7) / 15 * 100%); width: calc((var(--b) - var(--a)) / 15 * 100%);
+    display: grid; align-content: end; padding: 0.5rem 0.6rem; font-family: var(--sc-font-display); font-size: 1.05rem; font-style: italic; line-height: 1.05; overflow: hidden; }
+  .day__seg--light { background: color-mix(in oklab, var(--sc-accent) 14%, var(--sc-canvas)); color: var(--sc-ink); }
+  .day__seg--quiet { background: var(--sc-accent); color: var(--sc-accent-ink); }
+  .day__seg--eve { background: #24222C; color: #F3E6CF; background-image: radial-gradient(5rem 4rem at 80% 10%, rgb(255 205 140 / 0.35), transparent 70%); }
+  .day__seg + .day__seg { box-shadow: -1px 0 0 var(--sc-canvas); }
+  .day__ticks { position: relative; height: 1.6rem; margin-top: 0.4rem; font-variant-numeric: lining-nums tabular-nums; font-size: 0.82rem; color: var(--sc-ink-soft); }
+  .day__ticks span { position: absolute; left: calc((var(--h) - 7) / 15 * 100%); transform: translateX(-50%); }
+  .day__ticks span:first-child { transform: none; } .day__ticks span:last-child { transform: translateX(-100%); }
+  .day__now { position: absolute; top: -0.6rem; bottom: -0.6rem; left: calc((var(--h) - 7) / 15 * 100%); width: 2px; background: var(--sc-ink); z-index: 2; }
+  .day__now::before { content: ""; position: absolute; top: -4px; left: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--sc-ink); }
+  .day__status { margin-top: 0.75rem; font-style: italic; }
+  .day__status b { font-weight: 500; font-style: normal; color: var(--sc-accent); }
+  .day__keys { margin: 1.75rem 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem 2rem; }
+  .day__keys dt { font-family: var(--sc-font-display); font-weight: 500; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+  .day__keys dt::before { content: ""; width: 0.8rem; height: 0.8rem; border-radius: 1px; background: var(--k); }
+  .day__keys dt small { font-family: var(--sc-font-text); font-size: 0.82rem; color: var(--sc-ink-soft); font-variant-numeric: lining-nums; }
+  .day__keys dd { margin: 0.15rem 0 0; color: var(--sc-ink-soft); font-size: 0.94em; line-height: 1.5; }
+
+  .side--c1 { grid-row: 1 / span 3; align-self: start; padding-top: 0.35rem; font-style: italic; color: var(--sc-ink-soft); font-size: 0.86em; line-height: 1.55; }
+  .snapshot { margin: 0 0 2.25rem; padding: 0.55rem 0.55rem 0.6rem; background: var(--card); box-shadow: var(--shadow); transform: rotate(-2.2deg); position: relative; }
+  .snapshot::before, .snapshot::after { content: ""; position: absolute; top: -10px; width: 64px; height: 22px; background: rgb(214 206 230 / 0.72); box-shadow: 0 1px 2px rgb(0 0 0 / 0.06); }
+  .snapshot::before { left: -14px; transform: rotate(-32deg); } .snapshot::after { right: -14px; transform: rotate(28deg); }
+  .snapshot img { width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; }
+  .snapshot figcaption { margin-top: 0.45rem; padding-inline: 0.2rem; line-height: 1.25; font-family: var(--sc-font-display); font-size: 0.98rem; color: var(--sc-ink-soft); }
+  .note-slip { padding: 1rem 1.1rem 1.1rem; background: #EEE9F7; box-shadow: var(--shadow); transform: rotate(1.4deg); font-family: var(--sc-font-display); font-size: 1.15rem; line-height: 1.35; color: #3B2E5A; }
+  .note-slip + .note-slip { margin-top: 1.5rem; transform: rotate(-1deg); background: var(--card); color: var(--sc-ink-soft); }
+  .pull { margin: clamp(2.5rem, 5vw, 3.5rem) 0; padding-left: 1.25rem; border-left: 2px solid var(--sc-accent); font-family: var(--sc-font-display); font-style: italic; font-weight: 400; font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.3rem); line-height: 1.12; color: var(--sc-accent); text-wrap: balance; }
+
+  /* ===================================================== GIỜ IM LẶNG (peak) */
+  .quiet { background: var(--sc-canvas); overflow: hidden; }
+  .quiet > * { position: absolute; }
+  .q-light { inset: -10% -40%; pointer-events: none; z-index: 0; will-change: transform;
+    background: linear-gradient(104deg, transparent 32%, rgb(255 236 200 / 0.55) 41%, rgb(255 236 200 / 0.55) 51%, transparent 60%);
+    mix-blend-mode: multiply; opacity: 0.55; }
+  .q-clock { z-index: 2; left: 50%; top: 42%; width: min(46vh, 34rem); aspect-ratio: 1; transform: translate(-50%, -50%); }
+  .q-clock svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 10px 22px hsl(250 16% 25% / 0.14)); }
+  .q-face { fill: var(--card); stroke: color-mix(in oklab, var(--sc-ink) 18%, transparent); stroke-width: 1; }
+  .q-tick { stroke: color-mix(in oklab, var(--sc-ink) 30%, transparent); stroke-width: 1; }
+  .q-tick--major { stroke: var(--sc-ink); stroke-width: 2.2; }
+  .q-num { font-family: var(--sc-font-display); font-size: 22px; fill: var(--sc-ink-soft); text-anchor: middle; dominant-baseline: central; }
+  .q-quietarc { fill: none; stroke: var(--sc-accent); stroke-width: 7; stroke-linecap: butt; opacity: 0.85; }
+  .q-hand { stroke: var(--sc-ink); stroke-linecap: round; }
+  .q-hand--min { stroke: var(--sc-accent); }
+  .q-pin { fill: var(--sc-accent); }
+  .q-digital { z-index: 2; left: 50%; top: calc(42% + min(23vh, 17rem) + 0.75rem); transform: translateX(-50%);
+    font-family: var(--sc-font-display); font-size: clamp(1.4rem, 1rem + 1vw, 2rem); font-variant-numeric: lining-nums tabular-nums; color: var(--sc-accent); white-space: nowrap; }
+  .q-notes { inset: 0; z-index: 3; pointer-events: none; }
+  .q-note { position: absolute; z-index: 3; left: var(--x); top: var(--y); max-width: 15rem; transform: rotate(var(--r)); will-change: transform, opacity;
+    font-family: var(--sc-font-display); font-style: italic; font-size: clamp(1.15rem, 0.9rem + 0.7vw, 1.6rem); line-height: 1.2; color: var(--sc-ink); }
+  .q-note__t { position: relative; display: inline; }
+  .q-note__t::after { content: ""; position: absolute; left: -0.15em; right: -0.15em; top: 55%; height: 2px; background: var(--sc-accent);
+    transform-origin: 0 50%; transform: scaleX(var(--s, 0)) rotate(-1.5deg); border-radius: 2px; }
+  .q-wave { z-index: 2; left: 0; right: 0; bottom: 0; height: 18vh; display: flex; align-items: center; gap: 3px; padding-inline: var(--sc-gutter); }
+  .q-wave i { flex: 1; height: 100%; background: color-mix(in oklab, var(--sc-ink) 60%, transparent); border-radius: 2px;
+    transform: scaleY(calc(var(--a) * var(--amp, 1) + 0.015)); transform-origin: 50% 50%; }
+  .q-wave i.is-blip { background: var(--sc-accent); transform: scaleY(calc(var(--a) * var(--amp, 1) + 0.015 + var(--blip, 0))); }
+  .q-after { z-index: 3; right: var(--sc-gutter); bottom: calc(18vh + 0.5rem); font-family: var(--sc-font-display); font-style: italic; font-size: clamp(1.6rem, 1.1rem + 1.5vw, 2.6rem); color: var(--sc-accent); opacity: 0; }
+
+  /* -------------------------------------------------------------- tủ sách */
+  .shelf-wrap { margin-top: 2.25rem; }
+  .spines { display: flex; align-items: flex-end; gap: 3px; min-height: 236px; padding: 1.4rem 1rem 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin;
+    background: linear-gradient(to bottom, color-mix(in oklab, var(--sc-surface) 70%, var(--sc-canvas)), var(--sc-surface)); }
+  .spine { position: relative; flex: none; width: var(--w); height: var(--h); padding: 0.6rem 0; border: 0; border-radius: 2px 2px 0 0; cursor: pointer;
+    background: var(--c); color: var(--t); writing-mode: vertical-rl; transform: rotate(180deg) translateY(0);
+    font-family: var(--sc-font-display); font-size: 0.92rem; font-weight: 500; line-height: 1; letter-spacing: 0.01em; text-align: left; white-space: nowrap; overflow: visible;
+    box-shadow: inset -3px 0 0 rgb(255 255 255 / 0.12), inset 3px 0 0 rgb(0 0 0 / 0.14);
+    transition: transform 200ms var(--sc-ease-out), filter 160ms var(--sc-ease-out); }
+  .spine::after { content: ""; position: absolute; left: 0; right: 0; top: 18%; height: 2px; background: rgb(255 255 255 / 0.22); }
+  @media (hover: hover) and (pointer: fine) { .spine:hover { transform: rotate(180deg) translateY(10px); } }
+  .spine:active { filter: brightness(0.92); }
+  .spine[aria-pressed="true"]::before { content: ""; position: absolute; bottom: -22px; left: 50%; width: 10px; height: 30px; margin-left: -5px; background: var(--sc-accent);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); }
+  .spine.is-out { opacity: 0.38; }
+  .plank { height: 14px; background: #2F2B36; box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.08), 0 8px 16px -6px hsl(250 16% 20% / 0.4); }
+  .shelf-hint { margin-top: 0.7rem; font-size: 0.86em; font-style: italic; color: var(--sc-ink-soft); }
+
+  .finder { margin-top: 2.5rem; }
+  .finder label { display: block; font-style: italic; color: var(--sc-ink-soft); margin-bottom: 0.4rem; }
+  .finder input[type="search"] { width: 100%; min-height: 48px; padding: 0.55rem 0.1rem; background: transparent; border: 0; border-bottom: 1px solid var(--sc-ink); border-radius: 0; font-size: var(--sc-t-lg); }
+  .finder input[type="search"]:focus-visible { outline-offset: 6px; }
+  .genres { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; padding: 0; list-style: none; }
+  .genre { min-height: 44px; padding: 0.4rem 0.95rem; background: transparent; border: 1px solid var(--sc-hairline-strong); border-radius: 999px; cursor: pointer;
+    transition: background-color 160ms var(--sc-ease-out), color 160ms var(--sc-ease-out), border-color 160ms var(--sc-ease-out), transform 120ms var(--sc-ease-out); }
+  .genre:active { transform: translateY(1px); }
+  .genre[aria-pressed="true"] { background: var(--sc-ink); color: var(--sc-canvas); border-color: var(--sc-ink); }
+  @media (hover: hover) and (pointer: fine) { .genre[aria-pressed="false"]:hover { border-color: var(--sc-ink); } }
+  .finder__count { margin-top: 1.25rem; font-style: italic; color: var(--sc-ink-soft); font-size: 0.92em; }
+  .index { list-style: none; margin: 0.75rem 0 0; padding: 0; columns: 2 16rem; column-gap: 2.5rem; }
+  .book { position: relative; break-inside: avoid; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 0.75rem; padding: 0.55rem 0; border-bottom: 1px dotted color-mix(in oklab, var(--sc-ink) 22%, transparent); }
+  .book__title { font-style: italic; }
+  .book__author { display: block; font-size: 0.86em; color: var(--sc-ink-soft); }
+  .book__state--out { font-style: italic; }
+  .fold { min-height: 44px; min-width: 4.8rem; padding: 0.35rem 0.5rem; background: transparent; border: 0; border-radius: var(--r); color: var(--sc-ink-soft); font-size: 0.82em; font-style: italic; cursor: pointer; text-align: right;
+    transition: color 160ms var(--sc-ease-out), transform 120ms var(--sc-ease-out); }
+  .fold:active { transform: translateY(1px); }
+  @media (hover: hover) and (pointer: fine) { .fold:hover { color: var(--sc-accent); } }
+  .fold[aria-pressed="true"] { color: var(--sc-accent); }
+  .book::after { content: ""; position: absolute; top: 0; right: 0; width: 20px; height: 20px;
+    background: linear-gradient(225deg, var(--sc-canvas) 0 50%, color-mix(in oklab, var(--sc-accent) 26%, var(--sc-canvas)) 50% 100%);
+    box-shadow: -1px 2px 3px hsl(258 30% 30% / 0.16); transform-origin: 100% 0; transform: scale(0.4) rotate(-12deg); opacity: 0;
+    transition: transform 240ms var(--sc-ease-out), opacity 180ms var(--sc-ease-out); pointer-events: none; }
+  .book.is-folded::after { opacity: 1; transform: none; }
+  .index__empty { padding: 1.5rem 0; color: var(--sc-ink-soft); font-style: italic; }
+  .shelf { margin-top: 2.5rem; padding: 1.4rem 1.5rem 1.5rem; background: #EEE9F7; box-shadow: var(--shadow); transform: rotate(-0.6deg); }
+  .shelf h3 { margin: 0 0 0.5rem; }
+  .shelf__list { margin: 0.5rem 0 0; padding-left: 1.2em; font-family: var(--sc-font-display); font-size: 1.15rem; }
+  .shelf__empty { color: var(--sc-ink-soft); font-style: italic; }
+
+  /* ----------------------------------------------------- phiếu giữ chỗ */
+  .ticket { position: relative; margin-top: 2.5rem; padding: clamp(1.75rem, 4vw, 3rem) clamp(1.25rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem) clamp(2.5rem, 5vw, 4rem);
+    background-color: var(--card);
+    background-image: repeating-linear-gradient(to bottom, transparent 0 calc(2.2rem - 1px), rgb(91 62 150 / 0.13) calc(2.2rem - 1px) 2.2rem);
+    background-position: 0 5.6rem;
+    box-shadow: var(--shadow); }
+  .ticket::before { content: ""; position: absolute; left: clamp(1.1rem, 2.4vw, 1.8rem); top: 0; bottom: 0; width: 1px; background: rgb(184 70 90 / 0.35); }
+  .ticket__hole { position: absolute; left: 50%; top: 0.9rem; width: 1.1rem; height: 1.1rem; margin-left: -0.55rem; border-radius: 50%; background: var(--sc-canvas); box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.25); }
+  .ticket__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .ticket__title { font-family: var(--sc-font-display); font-weight: 500; font-size: var(--sc-t-2xl); line-height: 1; }
+  .ticket__no { font-family: var(--sc-font-display); font-style: italic; color: var(--sc-ink-soft); font-variant-numeric: lining-nums; }
+  .booking fieldset { border: 0; margin: 2rem 0 0; padding: 0; }
+  .booking legend { padding: 0; font-family: var(--sc-font-display); font-style: italic; font-size: 1.25rem; color: var(--sc-accent); margin-bottom: 0.25rem; }
+  .field { margin-top: 1.1rem; }
+  .field > label, .field > .field__label { display: block; margin-bottom: 0.25rem; font-size: 0.92em; color: var(--sc-ink-soft); }
+  .field__hint { display: block; font-size: 0.86em; color: var(--sc-ink-soft); font-style: italic; margin-top: 0.3rem; }
+  .field__error { display: block; font-size: 0.9em; color: #8E1F2C; margin-top: 0.35rem; }
+  .field__error:empty { display: none; }
+  .booking input[type="text"], .booking input[type="tel"], .booking select, .booking textarea {
+    width: 100%; min-height: 46px; padding: 0.45rem 0.1rem; background: transparent; border: 0; border-bottom: 1.5px solid color-mix(in oklab, var(--sc-ink) 55%, transparent); border-radius: 0;
+    font-family: var(--sc-font-display); font-size: 1.3rem; transition: border-color 160ms var(--sc-ease-out); }
+  .booking select { cursor: pointer; }
+  .booking textarea { min-height: 4.4rem; resize: vertical; line-height: 2.2rem; }
+  .booking [aria-invalid="true"] { border-color: #8E1F2C; }
+  .slots { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .slot { display: grid; grid-template-columns: auto 1fr; gap: 0 0.7rem; align-items: start; padding: 0.7rem 0.8rem; background: rgb(255 255 255 / 0.6); border: 1px solid var(--sc-hairline-strong); border-radius: var(--r); cursor: pointer;
+    transition: border-color 160ms var(--sc-ease-out), background-color 160ms var(--sc-ease-out); }
+  .slot input { margin-top: 0.3rem; width: 1.1rem; height: 1.1rem; }
+  .slot__name { font-family: var(--sc-font-display); font-size: 1.15rem; line-height: 1.1; }
+  .slot__time { font-variant-numeric: tabular-nums lining-nums; color: var(--sc-ink-soft); font-size: 0.86em; display: block; }
+  .slot:has(input:checked) { border-color: var(--sc-accent); background: color-mix(in oklab, var(--sc-accent) 9%, var(--card)); }
+  .slot:has(input:focus-visible) { outline: 2px solid var(--sc-accent); outline-offset: 3px; }
+  .slot input:focus-visible { outline: none; }
+  .booking__books { margin-top: 1.25rem; padding: 0.9rem 1rem; background: #EEE9F7; }
+  .booking__books ul { margin: 0.4rem 0 0; padding-left: 1.2em; font-family: var(--sc-font-display); font-size: 1.1rem; }
+  .booking__actions { margin-top: 2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+  .btn { min-height: 48px; padding: 0.7rem 1.5rem; background: var(--sc-accent); color: var(--sc-accent-ink); border: 0; border-radius: var(--r); font-size: 1.05em; cursor: pointer; white-space: nowrap;
+    box-shadow: 0 2px 0 #3E2A6A; transition: background-color 160ms var(--sc-ease-out), transform 120ms var(--sc-ease-out), box-shadow 120ms var(--sc-ease-out); }
+  @media (hover: hover) and (pointer: fine) { .btn:hover { background: color-mix(in oklab, var(--sc-accent) 88%, black); } }
+  .btn:active { transform: translateY(2px); box-shadow: 0 0 0 #3E2A6A; }
+  .btn[disabled] { opacity: 0.6; cursor: progress; }
+  .booking__note { font-size: 0.86em; color: var(--sc-ink-soft); font-style: italic; }
+  .done { margin-top: 2rem; padding-top: 1.25rem; border-top: 1px dashed var(--sc-hairline-strong); }
+  .done h3 { margin: 0 0 0.5rem; }
+  .done:focus { outline: none; }
+  .stamp { position: absolute; right: clamp(1rem, 4vw, 3rem); top: clamp(4.5rem, 8vw, 6rem); padding: 0.5rem 1rem 0.55rem; border: 3px double var(--sc-accent); border-radius: 6px;
+    color: var(--sc-accent); font-family: var(--sc-font-display); font-weight: 600; font-size: 1.5rem; line-height: 1; text-align: center; transform: rotate(-9deg) scale(1);
+    mix-blend-mode: multiply; opacity: 0.85; animation: stamp 260ms var(--sc-ease-out); pointer-events: none; }
+  .stamp small { display: block; margin-top: 0.25rem; font-size: 0.8rem; font-weight: 500; font-variant-numeric: lining-nums; }
+  @keyframes stamp { from { transform: rotate(-9deg) scale(1.35); opacity: 0; } to { transform: rotate(-9deg) scale(1); opacity: 0.85; } }
+
+  /* ------------------------------------------------------- chương bốn */
+  .board { margin-top: 2rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; padding: 0; list-style: none; }
+  .board li { position: relative; padding: 1.6rem 1.1rem 1.2rem; background: var(--card); box-shadow: var(--shadow); font-family: var(--sc-font-display); font-size: 1.2rem; line-height: 1.25; }
+  .board li:nth-child(1) { transform: rotate(-1.6deg); } .board li:nth-child(2) { transform: rotate(1.2deg) translateY(10px); background: #EEE9F7; } .board li:nth-child(3) { transform: rotate(-0.6deg); }
+  .board li::before { content: ""; position: absolute; top: 0.6rem; left: 50%; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #9C86D6, var(--sc-accent) 60%); box-shadow: 0 2px 3px rgb(0 0 0 / 0.25); }
+  .club { margin-top: clamp(3.5rem, 7vw, 5rem); display: grid; grid-template-columns: auto 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  .cover { position: relative; width: clamp(8.5rem, 14vw, 11rem); aspect-ratio: 2 / 3; padding: 1.1rem 0.9rem 1rem 1.3rem; background: #3F5A4E; color: #EFE9D8;
+    display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow), inset 6px 0 0 rgb(0 0 0 / 0.18), inset 8px 0 0 rgb(255 255 255 / 0.06); transform: rotate(-3deg); }
+  .cover b { font-family: var(--sc-font-display); font-weight: 500; font-size: 1.5rem; line-height: 1; }
+  .cover span { font-size: 0.8rem; font-style: italic; opacity: 0.85; }
+  .club h3 { margin-top: 0; }
+  .margin-line { font-family: var(--sc-font-display); font-weight: 400; font-style: italic; font-size: clamp(1.6rem, 1.1rem + 1.3vw, 2.3rem); line-height: 1.15; color: var(--sc-accent); text-wrap: balance; }
+
+  /* ----------------------------------------------------------- colophon */
+  .colophon { padding-block: clamp(6rem, 14vw, 11rem) clamp(3rem, 6vw, 5rem); font-size: 0.92em; }
+  .colophon__mark { font-family: var(--sc-font-display); font-style: italic; font-size: var(--sc-t-2xl); line-height: 1; }
+  .colophon p + p { margin-top: 0.9em; }
+  .colophon__fine { margin-top: 3rem; padding-top: 1.25rem; border-top: 1px solid var(--sc-hairline); color: var(--sc-ink-soft); font-size: 0.86em; }
+  .credits { margin: 0.6rem 0 0; padding: 0; list-style: none; columns: 2 16rem; column-gap: 2rem; color: var(--sc-ink-soft); font-size: 0.86em; }
+  .credits li { break-inside: avoid; padding-block: 0.15rem; }
+
+  /* ===================================== DẢI ẢNH NHUỘM TÍM + TỜ GIẤY NỔI */
+  .band { position: relative; height: 74vh; overflow: hidden; background: #241B3A; }
+  .band img { position: absolute; left: 0; top: -14%; width: 100%; height: 128%; object-fit: cover;
+    filter: grayscale(1) contrast(1.35) brightness(0.95); mix-blend-mode: screen; opacity: 0.85; will-change: transform; }
+  .band::before { content: ""; position: absolute; inset: 0; z-index: 1; background: #5B3E96; mix-blend-mode: multiply; opacity: 0.4; }
+  .band::after { content: ""; position: absolute; inset: auto 0 0 0; height: 38%; z-index: 1; background: linear-gradient(to bottom, transparent, var(--sc-canvas)); }
+  .band__line { position: absolute; z-index: 2; left: var(--sc-gutter); top: clamp(3rem, 9vh, 6rem); max-width: 22ch;
+    font-family: var(--sc-font-display); font-style: italic; font-weight: 300; font-size: clamp(1.8rem, 1.2rem + 2vw, 3.2rem); line-height: 1.08; color: #F4EFFF; text-wrap: balance; }
+  .sheet { position: relative; z-index: 2; margin-top: -46vh; margin-bottom: clamp(3rem, 6vw, 5rem);
+    background: var(--card); border-radius: 3px; padding-block: clamp(3.5rem, 6vw, 5.5rem);
+    box-shadow: 0 1px 2px hsl(250 14% 20% / 0.06), 0 40px 80px -30px hsl(258 34% 18% / 0.42), 0 12px 24px -12px hsl(258 20% 20% / 0.18); }
+  .sheet::before { content: attr(data-tab); position: absolute; top: 0; left: var(--sc-gutter); transform: translateY(-100%);
+    padding: 0.45rem 1.1rem 0.4rem; border-radius: 4px 4px 0 0; background: var(--card);
+    font-family: var(--sc-font-display); font-style: italic; font-size: 1.05rem; color: var(--sc-accent); box-shadow: 0 -6px 12px -8px hsl(258 30% 20% / 0.3); }
+  .over { position: relative; z-index: 2; margin-top: -50vh; padding-top: 0; }
+  .over .ticket { margin-top: 0; }
+  .ticket__intro { margin-top: 1.25rem; max-width: 46ch; color: var(--sc-ink-soft); }
+
+  .orn { display: flex; align-items: center; gap: 0.9rem; margin: clamp(3rem, 6vw, 4.5rem) 0; color: var(--sc-accent); }
+  .orn::before, .orn::after { content: ""; flex: 1; height: 1px; background: color-mix(in oklab, var(--sc-accent) 30%, transparent); }
+  .orn svg { width: 54px; height: 12px; }
+
+  .pull { grid-column: 2; position: relative; border: 0; padding: 0 0 0 clamp(1rem, 3vw, 2.5rem); margin: clamp(3rem, 6vw, 4.5rem) 0 0;
+    font-size: clamp(1.9rem, 1.3rem + 1.8vw, 3rem); line-height: 1.08; color: var(--sc-accent); }
+  .pull::before { content: "\201C"; position: absolute; left: -0.18em; top: -0.42em; font-size: 3.4em; line-height: 1; color: color-mix(in oklab, var(--sc-accent) 22%, transparent); font-style: normal; }
+  .pull cite { display: block; margin-top: 1rem; font-family: var(--sc-font-text); font-size: 0.95rem; font-style: normal; color: var(--sc-ink-soft); }
+
+  .ico { flex: none; width: 2.1rem; height: 2.1rem; border-radius: 50%; display: grid; place-items: center; background: var(--k); color: var(--ki); }
+  .ico svg { width: 1.05rem; height: 1.05rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .day__keys dt::before { content: none; }
+  .day__keys dt { gap: 0.65rem; }
+  .day__keys dd { padding-left: 2.75rem; }
+
+  @media (max-width: 1100px) { :root { --col-margin: 9rem; --col-side: 12rem; } }
+
+  /* -------------------------------------------------------------- mobile */
+  @media (max-width: 900px) {
+    .page { grid-template-columns: minmax(0, 1fr); max-width: 40rem; }
+    .page > *, .page > .side, .page > .wide { grid-column: 1; }
+    .side { grid-row: auto !important; margin-top: 2rem; }
+    .side--c1 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: start; }
+    .snapshot { margin: 0; }
+
+    .fx__frame { --ox: 6vw; --oy: 8svh; --ow: 88vw; --oh: 40svh; }
+    .fx__copy { left: var(--sc-gutter); right: var(--sc-gutter); width: auto; bottom: max(2rem, 5svh); }
+    .fx h1 { font-size: clamp(3.8rem, 19vw, 6rem); }
+    .fx__lede { font-size: var(--sc-t-base); margin-top: 1rem; }
+    .fx__links { margin-top: 0.75rem; }
+    .fx__near { width: 46vw; right: 1vw; top: calc(8svh + 40svh - 18vw); bottom: auto; }
+
+    .opening { grid-template-columns: 1fr; grid-template-rows: 52svh auto; }
+    .opening__panel { min-height: 48svh; padding-block: 2.5rem 3rem; }
+    .opening__fig { grid-row: 1; }
+    .snap { right: 6vw; bottom: 8%; width: 34vw; }
+
+    .q-clock { top: 30%; width: min(32vh, 70vw); }
+    .q-digital { top: calc(30% + min(16vh, 35vw) + 0.4rem); }
+    .q-note { left: var(--mx); top: var(--my); max-width: 46vw; font-size: 1.05rem; }
+    .q-wave { height: 12vh; }
+    .q-after { bottom: calc(12vh + 0.5rem); left: var(--sc-gutter); right: auto; }
+
+    .index { columns: 1; }
+    .band { height: 56svh; }
+    .sheet { margin-top: -28svh; margin-inline: 10px; padding-inline: calc(var(--sc-gutter) - 6px); }
+    .over { margin-top: -30svh; }
+    .pull { grid-column: 1; }
+    .folio { top: 0; left: 0; right: 0; width: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3rem; padding: 0.35rem var(--sc-gutter);
+      background: color-mix(in oklab, var(--sc-canvas) 94%, transparent); border-bottom: 1px solid var(--sc-hairline); font-size: 0.9rem; }
+    body.on-ink .folio { background: color-mix(in oklab, var(--sc-accent) 94%, transparent); border-color: transparent; }
+    .folio__chapter { margin: 0; text-align: right; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .folio__chapter br, #folio-no { display: none; }
+    .folio__shelf { margin: 0; padding: 0.4rem 0; white-space: nowrap; }
+    .ribbon { right: 6px; }
+    .day__seg { font-size: 0.85rem; padding: 0.35rem; }
+    .day__keys { grid-template-columns: 1fr; }
+    .slots { grid-template-columns: 1fr; }
+    .board { grid-template-columns: 1fr; gap: 1.5rem; }
+    .stamp { top: auto; bottom: 1.5rem; }
+  }
+  @media (max-width: 520px) { .day__seg--light span { display: none; } }
+
+  /* -------------------------------------------------------- reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .fx__far { transform: none; }
+    .k-lamp .media { transform: none; } .k-lamp .dim { opacity: 0; }
+    .k-window .media { clip-path: none; } .k-window .sash { opacity: 0; }
+    .q-after { opacity: 1; }
+    .book::after { transition: opacity 180ms linear; transform: none; }
+    .stamp { animation: none; }
+    .ribbon { transition: none; }
+  }
+</style>
+</head>
+<body class="in-hero">
+
+<a class="vh skip" href="#chuong-mot">Bỏ qua, đến nội dung</a>
+<div class="sc-grain" aria-hidden="true"></div>
+
+<nav class="folio" id="folio" aria-label="Vị trí đang đọc">
+  <a class="folio__mark" href="#top">Gác Chữ</a>
+  <p class="folio__chapter"><span id="folio-no">Chương một</span><br><span class="folio__title" id="folio-title">Luật im lặng</span></p>
+  <a class="folio__shelf" id="folio-shelf" href="#ke-cua-ban" hidden>Kệ của bạn (<span id="folio-shelf-n">0</span>)</a>
+</nav>
+<div class="ribbon" id="ribbon" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ===================================== FRONTISPIECE: nhìn qua ô cửa gác -->
+  <section class="fx" id="top" data-sc-act="pin" data-sc-span="1.5">
+    <div data-sc-stage class="fx__stage">
+      <img class="fx__far" id="fx-far" alt="Một con phố cũ ở Hà Nội sau mưa, mặt đường còn ướt, một người đi xe máy ở cuối phố"
+           src="https://images.unsplash.com/photo-1508383696188-90b183ebdd47?auto=format&fit=crop&w=2000&q=72"
+           srcset="https://images.unsplash.com/photo-1508383696188-90b183ebdd47?auto=format&fit=crop&w=900&q=70 900w,
+                   https://images.unsplash.com/photo-1508383696188-90b183ebdd47?auto=format&fit=crop&w=1400&q=72 1400w,
+                   https://images.unsplash.com/photo-1508383696188-90b183ebdd47?auto=format&fit=crop&w=2000&q=72 2000w"
+           sizes="100vw" width="2000" height="1333" fetchpriority="high">
+      <img class="fx__glass" id="fx-glass" alt="" aria-hidden="true"
+           src="https://images.unsplash.com/photo-1567688993206-43c34131b21f?auto=format&fit=crop&w=1600&q=60"
+           srcset="https://images.unsplash.com/photo-1567688993206-43c34131b21f?auto=format&fit=crop&w=800&q=60 800w,
+                   https://images.unsplash.com/photo-1567688993206-43c34131b21f?auto=format&fit=crop&w=1600&q=60 1600w"
+           sizes="100vw" width="1600" height="1067">
+      <div class="fx__frame" id="fx-frame" aria-hidden="true"></div>
+      <div class="fx__lamp" id="fx-lamp" aria-hidden="true"></div>
+      <header class="fx__copy" id="fx-copy">
+        <p class="fx__place">Một gác thượng trên phố Hàng Bông, Hà Nội</p>
+        <h1>Gác Chữ</h1>
+        <p class="fx__lede">Ba nghìn cuốn sách, mười tám chỗ ngồi, và hai tiếng mỗi sáng không ai nói chuyện.</p>
+        <p class="fx__links"><a href="#dat-cho">Giữ một chỗ ngồi</a><a href="#tu-sach">Xem tủ sách</a></p>
+      </header>
+      <img class="fx__near" id="fx-near" alt="" aria-hidden="true"
+           src="https://images.unsplash.com/photo-1543233604-3baca4d35513?auto=format&fit=crop&w=1100&q=70"
+           srcset="https://images.unsplash.com/photo-1543233604-3baca4d35513?auto=format&fit=crop&w=600&q=70 600w,
+                   https://images.unsplash.com/photo-1543233604-3baca4d35513?auto=format&fit=crop&w=1100&q=70 1100w"
+           sizes="(max-width: 900px) 46vw, 34vw" width="1100" height="1650">
+      <div class="fx__capwrap" id="fx-capwrap" aria-hidden="true"></div>
+      <p class="fx__caption" id="fx-caption">Sáu giờ sáng, phố Hàng Bông vừa tạnh mưa. Gác mở cửa lúc bảy giờ.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ Chương một (ảnh: đèn bật) -->
+  <section class="opening" data-sc-act="flow" data-open="lamp" data-chapter="Chương một|Luật im lặng" aria-labelledby="c1" id="chuong-mot">
+    <div class="opening__panel" data-ink>
+      <p class="opening__no">Chương một</p>
+      <h2 id="c1">Luật im lặng</h2>
+      <p class="opening__lead">Một căn gác, một luật, và hai tiếng mỗi sáng dành trọn cho trang sách.</p>
+    </div>
+    <figure class="opening__fig k-lamp">
+      <img class="media" loading="lazy" alt="Một người ngồi trên bậu cửa sổ, đọc sách trong ánh sáng ban ngày"
+           src="https://images.unsplash.com/photo-1728931710048-fa21f9f9340c?auto=format&fit=crop&w=1400&q=72"
+           srcset="https://images.unsplash.com/photo-1728931710048-fa21f9f9340c?auto=format&fit=crop&w=800&q=70 800w,
+                   https://images.unsplash.com/photo-1728931710048-fa21f9f9340c?auto=format&fit=crop&w=1400&q=72 1400w"
+           sizes="(max-width: 900px) 100vw, 60vw" width="1400" height="1400">
+      <div class="dim" aria-hidden="true"></div>
+      <figcaption>Bậu cửa phía đông là chỗ được giữ nhiều nhất. Ảnh: Kelly Sikkema</figcaption>
+    </figure>
+  </section>
+
+  <div class="band" data-sc-act="flow" data-ink aria-hidden="true">
+    <img data-sc-parallax="-0.16" loading="lazy" alt=""
+         src="https://images.unsplash.com/photo-1587169102373-3b2b7158a784?auto=format&fit=crop&w=1800&q=65"
+         srcset="https://images.unsplash.com/photo-1587169102373-3b2b7158a784?auto=format&fit=crop&w=900&q=65 900w,
+                 https://images.unsplash.com/photo-1587169102373-3b2b7158a784?auto=format&fit=crop&w=1800&q=65 1800w"
+         sizes="100vw" width="1800" height="1200">
+    <p class="band__line">Mười năm dịch sách, ba nghìn cuốn, một căn gác.</p>
+  </div>
+  <section class="page chapter sheet" data-tab="Chương một" data-chapter="Chương một|Luật im lặng">
+    <div class="prose" data-sc-in>
+      <p class="lead">Anh Duy dịch sách. Mười năm làm nghề, sách của anh dồn lên đến ba nghìn cuốn, và căn hộ thì không lớn thêm. Anh thuê gác thượng của một nhà phố trên Hàng Bông, kê kệ quanh bốn bức tường, đặt mười tám chiếc ghế và mở cửa cho bất kỳ ai muốn ngồi đọc.</p>
+      <p>Gác Chữ chỉ có một luật. Từ chín giờ đến mười một giờ sáng, không ai nói chuyện. Không gọi điện, không họp trực tuyến, không gọi đồ uống bằng lời. Bạn viết món mình muốn vào mảnh giấy trên bàn, và cốc sẽ được mang đến tận chỗ.</p>
+    </div>
+    <blockquote class="pull" data-sc-in>Ngoài hai tiếng đó, cứ nói nhỏ, cứ cười. Chỉ cần nhớ người bên cạnh đang ở giữa một trang sách.<cite>Tấm bảng nhỏ ở đầu cầu thang</cite></blockquote>
+
+    <div class="orn" aria-hidden="true"><svg viewBox="0 0 54 12"><circle cx="6" cy="6" r="2" fill="currentColor"/><path d="M27 1 L32 6 L27 11 L22 6 Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="48" cy="6" r="2" fill="currentColor"/></svg></div>
+
+    <div class="day" data-sc-in>
+      <p class="kicker">Một ngày ở gác</p>
+      <ol class="day__bar" aria-label="Các khung giờ từ 7 giờ sáng đến 10 giờ tối">
+        <li class="day__seg day__seg--light" style="--a:7;--b:9"><span>Đọc nhẹ</span></li>
+        <li class="day__seg day__seg--quiet" style="--a:9;--b:11">Im lặng</li>
+        <li class="day__seg day__seg--light" style="--a:11;--b:17"><span>Đọc nhẹ</span></li>
+        <li class="day__seg day__seg--eve" style="--a:17;--b:22">Buổi tối</li>
+        <li class="day__now" id="day-now" aria-hidden="true" hidden></li>
+      </ol>
+      <div class="day__ticks" aria-hidden="true"><span style="--h:7">7:00</span><span style="--h:9">9:00</span><span style="--h:11">11:00</span><span style="--h:17">17:00</span><span style="--h:22">22:00</span></div>
+      <p class="day__status" id="day-status" aria-live="polite"></p>
+      <dl class="day__keys">
+        <div style="--k: color-mix(in oklab, #5B3E96 16%, #F1F1EE); --ki:#3B2E5A"><dt><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 4h6a4 4 0 0 1 4 4v12a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v12a3 3 0 0 1 3-3h7z"/></svg></span>Đọc nhẹ <small>7 đến 9, 11 đến 17</small></dt><dd>Nói nhỏ được, nhạc không lời rất khẽ. Bàn dài cạnh cửa sổ dành cho người viết.</dd></div>
+        <div style="--k:#5B3E96; --ki:#F1F1EE"><dt><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M22 9l-6 6"/><path d="M16 9l6 6"/></svg></span>Im lặng <small>9 đến 11</small></dt><dd>Không nói, không gọi điện, điện thoại để im. Mỗi bàn tối đa hai người.</dd></div>
+        <div style="--k:#24222C; --ki:#F3D9A8"><dt><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 2h8l4 9H4z"/><path d="M12 11v9"/><path d="M8 21h8"/></svg></span>Buổi tối <small>17 đến 22</small></dt><dd>Chỉ còn đèn bàn. Tối thứ Năm có câu lạc bộ đọc chung.</dd></div>
+      </dl>
+    </div>
+
+    <aside class="side side--c1" aria-label="Ghi chú bên lề">
+      <figure class="snapshot">
+        <img loading="lazy" alt="Mặt tiền một nhà phố cũ ở Hà Nội với ban công sắt và cửa chớp"
+             src="https://images.unsplash.com/photo-1600869080148-338f85fb17f8?auto=format&fit=crop&w=600&q=70" width="600" height="750">
+        <figcaption>Gác ở tầng bốn. Ảnh: Hieu Tran</figcaption>
+      </figure>
+      <div>
+        <p class="note-slip">Trà sen, phin đen, phin sữa. Viết lên giấy, kẹp dưới chân đèn.</p>
+        <p class="note-slip">Quán nghỉ thứ Hai. Bút chì ở trong cốc.</p>
+      </div>
+    </aside>
+  </section>
+
+  <!-- ================================================= Giờ im lặng: peak -->
+  <section class="quiet-act" data-sc-act="pin" data-sc-span="2.6" id="gio-im-lang" aria-labelledby="quiet-h">
+    <div data-sc-stage class="quiet" id="quiet">
+      <h2 class="vh" id="quiet-h">Hai tiếng im lặng, từ 9 giờ đến 11 giờ sáng. Từng tiếng động của phố tắt dần, chỉ còn tiếng lật trang.</h2>
+      <div class="q-light" id="q-light" aria-hidden="true"></div>
+      <div class="q-clock" aria-hidden="true">
+        <svg viewBox="-200 -200 400 400" id="q-svg">
+          <circle class="q-face" r="190"/>
+          <path class="q-quietarc" d="M -168 0 A 168 168 0 0 1 -84 -145.5"/>
+          <g id="q-ticks"></g>
+          <g id="q-nums"></g>
+          <line class="q-hand" id="q-hour" x1="0" y1="18" x2="0" y2="-96" stroke-width="7"/>
+          <line class="q-hand q-hand--min" id="q-min" x1="0" y1="26" x2="0" y2="-150" stroke-width="3.5"/>
+          <circle class="q-pin" r="7"/>
+        </svg>
+      </div>
+      <p class="q-digital" id="q-digital" aria-hidden="true">9:00</p>
+      <div class="q-notes" aria-hidden="true">
+        <p class="q-note" style="--x:9%;--y:13%;--r:-3deg;--mx:5%;--my:52%"><span class="q-note__t">Tiếng thìa chạm thành cốc.</span></p>
+        <p class="q-note" style="--x:69%;--y:11%;--r:2deg;--mx:52%;--my:53%"><span class="q-note__t">Tiếng xe máy dưới phố.</span></p>
+        <p class="q-note" style="--x:5%;--y:40%;--r:-1deg;--mx:5%;--my:61%"><span class="q-note__t">Tiếng ai đó hỏi mật khẩu wifi.</span></p>
+        <p class="q-note" style="--x:74%;--y:34%;--r:3deg;--mx:52%;--my:63%"><span class="q-note__t">Tiếng quạt trần.</span></p>
+        <p class="q-note" style="--x:12%;--y:62%;--r:2deg;--mx:5%;--my:71%"><span class="q-note__t">Tiếng mưa trên mái tôn nhà bên.</span></p>
+        <p class="q-note" style="--x:70%;--y:58%;--r:-2deg;--mx:52%;--my:73%"><span class="q-note__t">Tiếng điện thoại rung trong túi áo.</span></p>
+        <p class="q-note" style="--x:34%;--y:4%;--r:1deg;--mx:28%;--my:4%"><span class="q-note__t">Tiếng bạn thở ra.</span></p>
+      </div>
+      <div class="q-wave" id="q-wave" aria-hidden="true"></div>
+      <p class="q-after" id="q-after" aria-hidden="true">Chỉ còn tiếng lật trang.</p>
+    </div>
+  </section>
+
+  <!-- =========================================== Chương hai (ảnh: gáy sách) -->
+  <section class="opening" data-sc-act="flow" data-open="slats" data-chapter="Chương hai|Tủ sách" aria-labelledby="c2" id="tu-sach">
+    <div class="opening__panel" data-ink>
+      <p class="opening__no">Chương hai</p>
+      <h2 id="c2">Tủ sách</h2>
+      <p class="opening__lead">Ba nghìn cuốn, xếp theo cách anh Duy nhớ chúng, không theo bảng chữ cái.</p>
+    </div>
+    <figure class="opening__fig k-slats" id="slats" role="img" aria-label="Một căn phòng tối với những giá sách cao kín tường">
+      <figcaption>Kệ phía tây, nơi để văn học dịch. Ảnh: Francesco Dondi</figcaption>
+    </figure>
+  </section>
+
+  <div class="band" data-sc-act="flow" data-ink aria-hidden="true">
+    <img data-sc-parallax="-0.16" loading="lazy" alt=""
+         src="https://images.unsplash.com/photo-1594620302200-9a762244a156?auto=format&fit=crop&w=1800&q=65"
+         srcset="https://images.unsplash.com/photo-1594620302200-9a762244a156?auto=format&fit=crop&w=900&q=65 900w,
+                 https://images.unsplash.com/photo-1594620302200-9a762244a156?auto=format&fit=crop&w=1800&q=65 1800w"
+         sizes="100vw" width="1800" height="1200">
+    <p class="band__line">Sách xếp theo trí nhớ, không theo bảng chữ cái.</p>
+  </div>
+  <section class="page chapter sheet" data-tab="Chương hai" data-chapter="Chương hai|Tủ sách" aria-label="Tìm sách">
+    <div class="prose" data-sc-in>
+      <p class="lead">Mọi cuốn trên kệ đều đọc tại chỗ được. Thấy cuốn nào muốn đọc lần tới, hãy gấp góc nó, ở gáy sách hay trong mục lục bên dưới. Quán sẽ để sẵn cuốn đó trên bàn của bạn.</p>
+    </div>
+    <div class="shelf-wrap wide" data-sc-in>
+      <div class="spines" id="spines" role="group" aria-label="Kệ sách, bấm vào gáy để gấp góc"></div>
+      <div class="plank" aria-hidden="true"></div>
+      <p class="shelf-hint">Gáy mờ là sách đang có người đọc. Dải tím là sách bạn đã gấp góc.</p>
+    </div>
+    <div class="finder">
+      <label for="q">Tìm theo tên sách hoặc tác giả, gõ có dấu hay không dấu đều được</label>
+      <input type="search" id="q" autocomplete="off" spellcheck="false" placeholder="ví dụ: thach lam">
+      <ul class="genres" id="genres" aria-label="Lọc theo thể loại"></ul>
+      <p class="finder__count" id="count" aria-live="polite"></p>
+    </div>
+    <ul class="index" id="index"></ul>
+    <div class="shelf" id="ke-cua-ban">
+      <h3>Kệ của bạn</h3>
+      <p class="shelf__empty" id="shelf-empty">Chưa có cuốn nào. Gấp góc một cuốn sách để dành nó cho lần ghé tới.</p>
+      <ol class="shelf__list" id="shelf-list" hidden></ol>
+    </div>
+  </section>
+
+  <!-- ============================================== Chương ba (ảnh: ô cửa) -->
+  <section class="opening" data-sc-act="flow" data-open="window" data-chapter="Chương ba|Giữ một chỗ ngồi" aria-labelledby="c3" id="dat-cho">
+    <div class="opening__panel" data-ink>
+      <p class="opening__no">Chương ba</p>
+      <h2 id="c3">Giữ một chỗ ngồi</h2>
+      <p class="opening__lead">Mười tám chỗ. Chỗ nào cũng có đèn bàn, chỗ nào cũng nhìn được ra trời.</p>
+    </div>
+    <figure class="opening__fig k-window">
+      <img class="media" loading="lazy" alt="Ô cửa sổ khung gỗ, ánh sáng chiếu vào một góc phòng còn trống"
+           src="https://images.unsplash.com/photo-1601464996991-0331fe08ca0e?auto=format&fit=crop&w=1400&q=72"
+           srcset="https://images.unsplash.com/photo-1601464996991-0331fe08ca0e?auto=format&fit=crop&w=800&q=70 800w,
+                   https://images.unsplash.com/photo-1601464996991-0331fe08ca0e?auto=format&fit=crop&w=1400&q=72 1400w"
+           sizes="(max-width: 900px) 100vw, 60vw" width="1400" height="1400">
+      <div class="sash" aria-hidden="true"></div>
+      <figcaption>Chỗ này đang trống. Có thể là của bạn sáng mai. Ảnh: ilya</figcaption>
+    </figure>
+  </section>
+
+  <div class="band" data-sc-act="flow" data-ink aria-hidden="true">
+    <img data-sc-parallax="-0.16" loading="lazy" alt=""
+         src="https://images.unsplash.com/photo-1600818797017-d6e5027210bb?auto=format&fit=crop&w=1800&q=65"
+         srcset="https://images.unsplash.com/photo-1600818797017-d6e5027210bb?auto=format&fit=crop&w=900&q=65 900w,
+                 https://images.unsplash.com/photo-1600818797017-d6e5027210bb?auto=format&fit=crop&w=1800&q=65 1800w"
+         sizes="100vw" width="1800" height="1200">
+    <p class="band__line">Một cốc trà, một cuốn sách, một buổi sáng không ai gọi.</p>
+  </div>
+  <section class="page chapter over" data-chapter="Chương ba|Giữ một chỗ ngồi" aria-label="Phiếu giữ chỗ">
+    <div class="ticket" id="ticket">
+      <span class="ticket__hole" aria-hidden="true"></span>
+      <div class="ticket__head">
+        <p class="ticket__title">Phiếu giữ chỗ</p>
+        <p class="ticket__no">Gác Chữ, tầng bốn</p>
+      </div>
+      <p class="ticket__intro">Giờ im lặng thường kín vào cuối tuần, nên nếu định đến lúc chín giờ, bạn hãy điền phiếu trước. Không cần tài khoản.</p>
+      <form class="booking" id="booking" novalidate>
+        <fieldset>
+          <legend>Bước 1: Thời gian</legend>
+          <div class="field">
+            <label for="day">Ngày</label>
+            <select id="day" name="day" aria-describedby="day-hint"></select>
+            <span class="field__hint" id="day-hint">Quán nghỉ thứ Hai, nên thứ Hai không có trong danh sách.</span>
+          </div>
+          <div class="field" role="radiogroup" aria-labelledby="slot-label" aria-describedby="slot-error">
+            <span class="field__label" id="slot-label">Khung giờ</span>
+            <div class="slots">
+              <label class="slot"><input type="radio" name="slot" value="Đọc nhẹ buổi sáng"><span><span class="slot__name">Đọc nhẹ buổi sáng</span><span class="slot__time">7:00 đến 9:00</span></span></label>
+              <label class="slot"><input type="radio" name="slot" value="Im lặng"><span><span class="slot__name">Im lặng</span><span class="slot__time">9:00 đến 11:00</span></span></label>
+              <label class="slot"><input type="radio" name="slot" value="Đọc nhẹ buổi chiều"><span><span class="slot__name">Đọc nhẹ buổi chiều</span><span class="slot__time">11:00 đến 17:00</span></span></label>
+              <label class="slot"><input type="radio" name="slot" value="Buổi tối"><span><span class="slot__name">Buổi tối</span><span class="slot__time">17:00 đến 22:00</span></span></label>
+            </div>
+            <span class="field__error" id="slot-error"></span>
+          </div>
+          <div class="field">
+            <label for="people">Số người</label>
+            <select id="people" name="people" aria-describedby="people-hint people-error">
+              <option value="1">1 người</option><option value="2">2 người</option><option value="3">3 người</option><option value="4">4 người</option>
+            </select>
+            <span class="field__hint" id="people-hint">Giờ im lặng nhận tối đa hai người một bàn, để bàn bên cạnh còn yên.</span>
+            <span class="field__error" id="people-error"></span>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Bước 2: Liên hệ</legend>
+          <div class="field">
+            <label for="name">Tên của bạn</label>
+            <input type="text" id="name" name="name" autocomplete="name" aria-describedby="name-error">
+            <span class="field__error" id="name-error"></span>
+          </div>
+          <div class="field">
+            <label for="phone">Số điện thoại</label>
+            <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" aria-describedby="phone-hint phone-error">
+            <span class="field__hint" id="phone-hint">Quán chỉ nhắn tin nếu cần đổi chỗ.</span>
+            <span class="field__error" id="phone-error"></span>
+          </div>
+          <div class="field">
+            <label for="note">Ghi chú (không bắt buộc)</label>
+            <textarea id="note" name="note" rows="2"></textarea>
+          </div>
+          <div class="booking__books" id="booking-books" aria-live="polite"></div>
+        </fieldset>
+        <div class="booking__actions">
+          <button class="btn" type="submit" id="submit">Giữ một chỗ ngồi</button>
+          <p class="booking__note">Bản demo: thông tin chưa được gửi đi đâu.</p>
+        </div>
+      </form>
+      <div class="done" id="done" tabindex="-1" hidden></div>
+    </div>
+  </section>
+
+  <!-- ===================================== Chương bốn (ảnh: ảnh đặt lên bàn) -->
+  <section class="opening" data-sc-act="flow" data-open="snap" data-chapter="Chương bốn|Đổi sách, đọc chung" aria-labelledby="c4">
+    <div class="opening__panel" data-ink>
+      <p class="opening__no">Chương bốn</p>
+      <h2 id="c4">Đổi sách, đọc chung</h2>
+      <p class="opening__lead">Một kệ không thuộc về ai, và một bàn dài vào tối thứ Năm.</p>
+    </div>
+    <figure class="opening__fig k-snap">
+      <div class="clip">
+        <img class="media" loading="lazy" alt="Hai người cùng đọc sách và ghi chép trên một chiếc bàn gỗ"
+             src="https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=1400&q=72"
+             srcset="https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=800&q=70 800w,
+                     https://images.unsplash.com/photo-1460518451285-97b6aa326961?auto=format&fit=crop&w=1400&q=72 1400w"
+             sizes="(max-width: 900px) 100vw, 60vw" width="1400" height="1400">
+      </div>
+      <figure class="snap" aria-hidden="true">
+        <img loading="lazy" alt="" src="https://images.unsplash.com/photo-1585521549926-ca6526bda09e?auto=format&fit=crop&w=500&q=70" width="500" height="625">
+        <span>kệ đổi sách</span>
+      </figure>
+      <figcaption>Bàn dài, tối thứ Năm, mười hai ghế. Ảnh: Alexis Brown, Priscilla Du Preez</figcaption>
+    </figure>
+  </section>
+
+  <div class="band" data-sc-act="flow" data-ink aria-hidden="true">
+    <img data-sc-parallax="-0.16" loading="lazy" alt=""
+         src="https://images.unsplash.com/photo-1521036392421-35d436448d6a?auto=format&fit=crop&w=1800&q=65"
+         srcset="https://images.unsplash.com/photo-1521036392421-35d436448d6a?auto=format&fit=crop&w=900&q=65 900w,
+                 https://images.unsplash.com/photo-1521036392421-35d436448d6a?auto=format&fit=crop&w=1800&q=65 1800w"
+         sizes="100vw" width="1800" height="1200">
+    <p class="band__line">Sách đọc xong rồi thì đi tiếp.</p>
+  </div>
+  <section class="page chapter sheet" data-tab="Chương bốn" data-sc-act="flow" data-chapter="Chương bốn|Đổi sách, đọc chung">
+    <div class="prose" data-sc-in>
+      <p class="lead">Cạnh cầu thang có một tấm bảng gỗ và một kệ không thuộc về ai. Bạn mang một cuốn đã đọc xong đến, và lấy một cuốn khác về. Luật được ghim ngay trên bảng:</p>
+    </div>
+    <ul class="board" data-sc-in data-sc-stagger="70">
+      <li>Mang một cuốn, lấy một cuốn. Không cần hỏi ai.</li>
+      <li>Viết một dòng vào trang cuối cho người đọc sau, nếu bạn muốn.</li>
+      <li>Sách giáo khoa và sách luyện thi xin để ở nhà.</li>
+    </ul>
+    <div class="club" data-sc-in>
+      <div class="cover" aria-hidden="true"><b>Gió đầu mùa</b><span>Thạch Lam</span></div>
+      <div>
+        <h3>Câu lạc bộ tối thứ Năm</h3>
+        <p>19:30, mười hai ghế quanh bàn dài. Mỗi tháng một cuốn, đọc trước ba chương và mang theo một câu bạn muốn hỏi. Tháng này là <i>Gió đầu mùa</i> của Thạch Lam. Không cần đăng ký, chỉ cần đến sớm mười phút để có ghế.</p>
+      </div>
+    </div>
+    <aside class="side" style="grid-row:1 / span 3; align-self:center" aria-label="Câu bên lề">
+      <p class="margin-line" data-sc-parallax="-0.14">Một cuốn sách đọc xong vẫn còn nửa đời nữa, ở tay người khác.</p>
+    </aside>
+  </section>
+
+  <!-- ============================================================ Colophon -->
+  <footer class="page colophon" data-chapter="Colophon|Gác Chữ">
+    <p class="colophon__mark">Gác Chữ</p>
+    <p>Gác thượng, phố Hàng Bông, Hoàn Kiếm, Hà Nội. Mở cửa 7:00 đến 22:00, nghỉ thứ Hai.</p>
+    <p>Nếu bạn cần một buổi sáng không ai làm phiền, hãy <a href="#dat-cho">giữ một chỗ ngồi</a>. Nếu chỉ muốn ghé qua, cứ lên thẳng tầng bốn; cầu thang ở bên phải hiệu may. Hoặc xem <a href="https://www.google.com/maps/search/?api=1&amp;query=H%C3%A0ng%20B%C3%B4ng%2C%20Ho%C3%A0n%20Ki%E1%BA%BFm%2C%20H%C3%A0%20N%E1%BB%99i" rel="noopener" target="_blank">chỉ đường trên Google Maps</a>.</p>
+    <div class="colophon__fine">
+      <p>Gác Chữ là một quán tưởng tượng, dựng làm dự án minh họa. Chữ sắp bằng Cormorant Garamond và Newsreader. Ảnh từ Unsplash, theo Unsplash License:</p>
+      <ul class="credits">
+        <li><a href="https://unsplash.com/photos/person-riding-motor-scooter-near-building-n1UCFgnlO1w" rel="noopener" target="_blank">Phố sau mưa</a>, Tung Minh</li>
+        <li><a href="https://unsplash.com/photos/a-close-up-of-a-window-with-drops-of-water-aJOslo_ZuWM" rel="noopener" target="_blank">Kính đọng nước</a>, ERIC ZHU</li>
+        <li><a href="https://unsplash.com/photos/latte-filled-black-teacup-on-top-of-book-near-brown-cup-on-window-6rvanRNA2Jc" rel="noopener" target="_blank">Cốc trên chồng sách</a>, Yoshiko Evanka</li>
+        <li><a href="https://unsplash.com/photos/a-woman-sitting-on-a-window-sill-reading-a-book-_Cb76otX0Zg" rel="noopener" target="_blank">Đọc bên cửa sổ</a>, Kelly Sikkema</li>
+        <li><a href="https://unsplash.com/photos/white-and-brown-concrete-building-FSVe66WJAMo" rel="noopener" target="_blank">Nhà phố Hà Nội</a>, Hieu Tran</li>
+        <li><a href="https://unsplash.com/photos/a-room-with-books-on-shelves-KuPBbsEVTN0" rel="noopener" target="_blank">Phòng sách</a>, Francesco Dondi</li>
+        <li><a href="https://unsplash.com/photos/brown-wooden-framed-glass-window-F726gv5jDt8" rel="noopener" target="_blank">Ô cửa khung gỗ</a>, ilya</li>
+        <li><a href="https://unsplash.com/photos/people-reading-and-writing-at-table-omeaHbEFlN4" rel="noopener" target="_blank">Đọc chung</a>, Alexis Brown</li>
+        <li><a href="https://unsplash.com/photos/stack-of-books-on-white-table-FSLWtjqMa0c" rel="noopener" target="_blank">Chồng sách</a>, Priscilla Du Preez</li>
+        <li><a href="https://unsplash.com/photos/white-book-page-on-brown-wooden-table-Xh_iVIo-u-8" rel="noopener" target="_blank">Trang sách trên bàn gỗ</a>, Sixteen Miles Out</li>
+        <li><a href="https://unsplash.com/photos/brown-wooden-book-shelves-near-window-JzrpTIuooFc" rel="noopener" target="_blank">Kệ sách cạnh cửa sổ</a>, Pickawood</li>
+        <li><a href="https://unsplash.com/photos/white-ceramic-mug-on-white-book-GVhAezjtX-4" rel="noopener" target="_blank">Cốc trên sách</a>, Sixteen Miles Out</li>
+        <li><a href="https://unsplash.com/photos/pile-of-books-in-front-of-the-pillow-3vZ3V6JUDT0" rel="noopener" target="_blank">Chồng sách bên gối</a>, Brandi Redd</li>
+      </ul>
+    </div>
+  </footer>
+
+</main>
+
+<script src="scrollcraft.js"></script>
+<script>
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) document.getElementById('top').setAttribute('data-sc-span', '1.02');
+})();
+ScrollCraft.mount(document.body);
+
+(function () {
+  'use strict';
+  var reduce = ScrollCraft.reduce;
+  var $ = function (id) { return document.getElementById(id); };
+  var clamp01 = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
+  var smooth = function (v) { v = clamp01(v); return v * v * (3 - 2 * v); };
+  var easeOut = function (v) { v = clamp01(v); return 1 - Math.pow(1 - v, 3); };
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  var SVGNS = 'http://www.w3.org/2000/svg';
+
+  /* ======================================================= tủ sách + gấp góc */
+  var BOOKS = [
+    ['Số đỏ', 'Vũ Trọng Phụng', 'Văn học Việt', 1], ['Vang bóng một thời', 'Nguyễn Tuân', 'Văn học Việt', 1],
+    ['Gió đầu mùa', 'Thạch Lam', 'Văn học Việt', 0], ['Hà Nội băm sáu phố phường', 'Thạch Lam', 'Tản văn và ký', 1],
+    ['Thương nhớ mười hai', 'Vũ Bằng', 'Tản văn và ký', 1], ['Những ngày thơ ấu', 'Nguyên Hồng', 'Tản văn và ký', 1],
+    ['Tắt đèn', 'Ngô Tất Tố', 'Văn học Việt', 1], ['Bỉ vỏ', 'Nguyên Hồng', 'Văn học Việt', 1],
+    ['Nỗi buồn chiến tranh', 'Bảo Ninh', 'Văn học Việt', 0], ['Cánh đồng bất tận', 'Nguyễn Ngọc Tư', 'Văn học Việt', 1],
+    ['Mùa lá rụng trong vườn', 'Ma Văn Kháng', 'Văn học Việt', 1], ['Chùa Đàn', 'Nguyễn Tuân', 'Văn học Việt', 1],
+    ['Trăm năm cô đơn', 'Gabriel García Márquez', 'Văn học dịch', 0], ['Rừng Na Uy', 'Haruki Murakami', 'Văn học dịch', 1],
+    ['Ông già và biển cả', 'Ernest Hemingway', 'Văn học dịch', 1], ['Bắt trẻ đồng xanh', 'J. D. Salinger', 'Văn học dịch', 1],
+    ['Đồi gió hú', 'Emily Brontë', 'Văn học dịch', 1], ['Những người khốn khổ', 'Victor Hugo', 'Văn học dịch', 1],
+    ['Người xa lạ', 'Albert Camus', 'Văn học dịch', 0], ['Xứ tuyết', 'Kawabata Yasunari', 'Văn học dịch', 1],
+    ['Dế Mèn phiêu lưu ký', 'Tô Hoài', 'Thiếu nhi', 1], ['Hoàng tử bé', 'Antoine de Saint-Exupéry', 'Thiếu nhi', 1],
+    ['Tuổi thơ dữ dội', 'Phùng Quán', 'Thiếu nhi', 0], ['Không gia đình', 'Hector Malot', 'Thiếu nhi', 1]
+  ].map(function (b, i) { return { id: 'b' + i, i: i, title: b[0], author: b[1], genre: b[2], onShelf: !!b[3] }; });
+  // Màu gáy: vải bìa đã bạc, không phải bảng màu thương hiệu.
+  var CLOTH = [['#3F5A4E', '#EFE9D8'], ['#5B3E96', '#F1F1EE'], ['#C9C1AE', '#2A2620'], ['#2F3346', '#E9E4D6'], ['#8E5A4C', '#F4EADF'],
+               ['#D9D2C3', '#2C2A26'], ['#6E7F86', '#F3F1EA'], ['#9C86D6', '#1F1A2C'], ['#4A4038', '#EDE3D1'], ['#B7A98C', '#24211C']];
+  var GENRES = ['Tất cả', 'Văn học Việt', 'Văn học dịch', 'Tản văn và ký', 'Thiếu nhi'];
+  function fold(s) { return s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
+  BOOKS.forEach(function (b) { b.key = fold(b.title + ' ' + b.author); });
+  var folded = store.get('gacchu.folded', []).filter(function (id) { return BOOKS.some(function (b) { return b.id === id; }); });
+  var state = { q: '', genre: 'Tất cả' };
+  var indexEl = $('index'), countEl = $('count'), genresEl = $('genres'), spinesEl = $('spines');
+  var isFolded = function (b) { return folded.indexOf(b.id) !== -1; };
+
+  GENRES.forEach(function (g) {
+    var li = document.createElement('li'), btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'genre'; btn.textContent = g;
+    btn.setAttribute('aria-pressed', g === state.genre ? 'true' : 'false');
+    btn.addEventListener('click', function () {
+      state.genre = g;
+      Array.prototype.forEach.call(genresEl.querySelectorAll('.genre'), function (x) { x.setAttribute('aria-pressed', x === btn ? 'true' : 'false'); });
+      render();
+    });
+    li.appendChild(btn); genresEl.appendChild(li);
+  });
+  function toggle(b) {
+    var i = folded.indexOf(b.id); if (i === -1) folded.push(b.id); else folded.splice(i, 1);
+    store.set('gacchu.folded', folded); render(); renderShelf();
+  }
+  function visible() {
+    var q = fold(state.q);
+    return BOOKS.filter(function (b) { return (state.genre === 'Tất cả' || b.genre === state.genre) && (!q || b.key.indexOf(q) !== -1); });
+  }
+  function render() {
+    var list = visible();
+    // gáy sách
+    spinesEl.textContent = '';
+    list.forEach(function (b) {
+      var s = document.createElement('button'), c = CLOTH[b.i % CLOTH.length];
+      s.type = 'button'; s.className = 'spine' + (b.onShelf ? '' : ' is-out'); s.textContent = b.title;
+      s.style.setProperty('--c', c[0]); s.style.setProperty('--t', c[1]);
+      s.style.setProperty('--w', (30 + (b.i * 7) % 16) + 'px');
+      s.style.setProperty('--h', Math.min(210, 150 + b.title.length * 2 + (b.i * 13) % 22) + 'px');
+      s.setAttribute('aria-pressed', isFolded(b) ? 'true' : 'false');
+      s.setAttribute('aria-label', (isFolded(b) ? 'Bỏ gấp góc ' : 'Gấp góc ') + b.title + ', ' + b.author + (b.onShelf ? '' : ', đang có người đọc'));
+      s.addEventListener('click', function () { toggle(b); });
+      spinesEl.appendChild(s);
+    });
+    // mục lục
+    indexEl.textContent = '';
+    if (!list.length) {
+      var e = document.createElement('li'); e.className = 'index__empty';
+      e.textContent = 'Không thấy cuốn nào khớp với "' + state.q + '". Thử gõ tên tác giả, hoặc chọn "Tất cả" thể loại.';
+      indexEl.appendChild(e);
+    }
+    list.forEach(function (b) {
+      var li = document.createElement('li'); li.className = 'book' + (isFolded(b) ? ' is-folded' : ''); li.dataset.id = b.id;
+      var txt = document.createElement('div');
+      var t = document.createElement('span'); t.className = 'book__title'; t.textContent = b.title;
+      var a = document.createElement('span'); a.className = 'book__author';
+      a.textContent = b.author + (b.onShelf ? '' : ', đang có người đọc');
+      txt.append(t, a);
+      var f = document.createElement('button'); f.type = 'button'; f.className = 'fold';
+      f.setAttribute('aria-pressed', isFolded(b) ? 'true' : 'false');
+      f.textContent = isFolded(b) ? 'Đã gấp góc' : 'Gấp góc';
+      f.setAttribute('aria-label', (isFolded(b) ? 'Bỏ gấp góc ' : 'Gấp góc ') + b.title);
+      f.addEventListener('click', function () { toggle(b); });
+      li.append(txt, f); indexEl.appendChild(li);
+    });
+    countEl.textContent = list.length === BOOKS.length ? 'Đang hiện cả ' + list.length + ' cuốn trong danh mục.' : 'Đang hiện ' + list.length + ' trong ' + BOOKS.length + ' cuốn.';
+  }
+  function foldedBooks() { return folded.map(function (id) { return BOOKS.filter(function (b) { return b.id === id; })[0]; }).filter(Boolean); }
+  function renderShelf() {
+    var fb = foldedBooks(), ol = $('shelf-list'); ol.textContent = '';
+    fb.forEach(function (b) { var li = document.createElement('li'), i = document.createElement('i'); i.textContent = b.title; li.append(i, ', ' + b.author); ol.appendChild(li); });
+    ol.hidden = !fb.length; $('shelf-empty').hidden = !!fb.length;
+    $('folio-shelf').hidden = !fb.length; $('folio-shelf-n').textContent = fb.length;
+    var box = $('booking-books'); box.textContent = '';
+    var p = document.createElement('p');
+    if (!fb.length) { p.innerHTML = 'Chưa có cuốn nào để sẵn. Bạn có thể <a href="#tu-sach">gấp góc sách ở Chương hai</a>.'; box.appendChild(p); }
+    else {
+      p.textContent = 'Quán sẽ để sẵn ở bàn khi bạn đến:';
+      var ul = document.createElement('ul');
+      fb.forEach(function (b) { var li = document.createElement('li'); li.textContent = b.title + ', ' + b.author; ul.appendChild(li); });
+      box.append(p, ul);
+    }
+  }
+  $('q').addEventListener('input', function (e) { state.q = e.target.value; render(); });
+  render(); renderShelf();
+
+  /* ======================================================== một ngày ở gác */
+  (function () {
+    var now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
+    var h = now.getHours() + now.getMinutes() / 60, day = now.getDay();
+    var hh = now.getHours() + ':' + ('0' + now.getMinutes()).slice(-2);
+    var status = $('day-status'), mark = $('day-now');
+    if (day === 1) { status.textContent = 'Hôm nay thứ Hai, gác nghỉ. Hẹn bạn sáng mai lúc 7:00.'; return; }
+    if (h < 7 || h >= 22) { status.textContent = 'Bây giờ ở Hà Nội là ' + hh + ', gác đang đóng cửa. Mở lại lúc 7:00.'; return; }
+    var name = h < 9 ? 'Đọc nhẹ' : h < 11 ? 'Im lặng' : h < 17 ? 'Đọc nhẹ' : 'Buổi tối';
+    mark.style.setProperty('--h', h.toFixed(2)); mark.hidden = false;
+    status.innerHTML = 'Bây giờ ở Hà Nội là ' + hh + ', trên gác đang là giờ <b></b>.';
+    status.querySelector('b').textContent = name;
+  })();
+
+  /* ================================================================== form */
+  var WEEK = ['chủ nhật', 'thứ Hai', 'thứ Ba', 'thứ Tư', 'thứ Năm', 'thứ Sáu', 'thứ Bảy'];
+  var daySel = $('day');
+  (function () {
+    var d = new Date(), added = 0, k = 0;
+    while (added < 7 && k < 10) {
+      var x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + k);
+      if (x.getDay() !== 1) {
+        var o = document.createElement('option'), w = WEEK[x.getDay()];
+        var label = k === 0 ? 'Hôm nay, ' + w : k === 1 ? 'Ngày mai, ' + w : w.charAt(0).toUpperCase() + w.slice(1);
+        o.value = x.getFullYear() + '-' + (x.getMonth() + 1) + '-' + x.getDate();
+        o.textContent = label + ' ' + x.getDate() + '/' + (x.getMonth() + 1);
+        daySel.appendChild(o); added++;
+      }
+      k++;
+    }
+  })();
+  var form = $('booking');
+  function err(id, msg, field) { $(id).textContent = msg || ''; if (field) field.setAttribute('aria-invalid', msg ? 'true' : 'false'); }
+  function validate() {
+    var ok = true, first = null, slot = form.querySelector('input[name="slot"]:checked');
+    if (!slot) { err('slot-error', 'Chọn một khung giờ.'); ok = false; first = first || form.querySelector('input[name="slot"]'); } else err('slot-error', '');
+    var people = $('people');
+    if (slot && slot.value === 'Im lặng' && +people.value > 2) { err('people-error', 'Giờ im lặng nhận tối đa 2 người một bàn. Chọn 2 người, hoặc chọn khung giờ khác.', people); ok = false; first = first || people; } else err('people-error', '', people);
+    var name = $('name');
+    if (!name.value.trim()) { err('name-error', 'Cho quán biết tên của bạn.', name); ok = false; first = first || name; } else err('name-error', '', name);
+    var phone = $('phone'), digits = phone.value.replace(/[\s.\-]/g, '');
+    if (!/^(0|\+84)\d{9}$/.test(digits)) { err('phone-error', 'Số điện thoại cần 10 chữ số, bắt đầu bằng 0 (ví dụ 09xx xxx xxx).', phone); ok = false; first = first || phone; } else err('phone-error', '', phone);
+    return { ok: ok, first: first, slot: slot };
+  }
+  form.addEventListener('change', function (e) {
+    if (e.target.name === 'slot' || e.target.id === 'people') {
+      var slot = form.querySelector('input[name="slot"]:checked');
+      if (slot) err('slot-error', '');
+      if (!(slot && slot.value === 'Im lặng' && +$('people').value > 2)) err('people-error', '', $('people'));
+    }
+  });
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = validate(); if (!v.ok) { v.first && v.first.focus(); return; }
+    var btn = $('submit'); btn.disabled = true; btn.textContent = 'Đang giữ chỗ…';
+    setTimeout(function () {
+      btn.disabled = false; btn.textContent = 'Giữ một chỗ ngồi';
+      var done = $('done'), fb = foldedBooks(), dayText = daySel.options[daySel.selectedIndex].textContent;
+      done.textContent = '';
+      var h = document.createElement('h3'); h.textContent = 'Đã giữ một chỗ ngồi';
+      var p = document.createElement('p');
+      p.textContent = 'Cho ' + $('name').value.trim() + ', ' + $('people').value + ' người, ' + dayText.toLowerCase() + ', khung ' + v.slot.value.toLowerCase() + '.' + (fb.length ? ' Trên bàn sẽ có sẵn ' + fb.length + ' cuốn bạn đã gấp góc.' : '');
+      var p2 = document.createElement('p'); p2.className = 'booking__note'; p2.style.marginTop = '0.75rem';
+      p2.textContent = 'Bản demo: thông tin chưa được gửi đi đâu. Bạn có thể sửa phiếu ở trên và giữ chỗ lại.';
+      done.append(h, p, p2); done.hidden = false;
+      var old = document.querySelector('.stamp'); if (old) old.remove();
+      var st = document.createElement('div'); st.className = 'stamp'; st.setAttribute('aria-hidden', 'true');
+      st.textContent = 'Đã giữ chỗ'; var sm = document.createElement('small'); sm.textContent = dayText.replace(/^.*?(\d+\/\d+)$/, '$1'); st.appendChild(sm);
+      $('ticket').appendChild(st);
+      done.focus();
+    }, 700);
+  });
+
+  /* ================================================ giờ im lặng: dựng cảnh */
+  var quietAct = $('gio-im-lang');
+  (function () {
+    var ticks = $('q-ticks'), nums = $('q-nums');
+    for (var i = 0; i < 60; i++) {
+      var a = i * 6 * Math.PI / 180, major = i % 5 === 0, r1 = major ? 160 : 170, r2 = 180;
+      var l = document.createElementNS(SVGNS, 'line');
+      l.setAttribute('x1', (Math.sin(a) * r1).toFixed(2)); l.setAttribute('y1', (-Math.cos(a) * r1).toFixed(2));
+      l.setAttribute('x2', (Math.sin(a) * r2).toFixed(2)); l.setAttribute('y2', (-Math.cos(a) * r2).toFixed(2));
+      l.setAttribute('class', 'q-tick' + (major ? ' q-tick--major' : '')); ticks.appendChild(l);
+    }
+    [12, 3, 6, 9].forEach(function (n) {
+      var a = (n % 12) * 30 * Math.PI / 180, t = document.createElementNS(SVGNS, 'text');
+      t.setAttribute('x', (Math.sin(a) * 134).toFixed(1)); t.setAttribute('y', (-Math.cos(a) * 134).toFixed(1));
+      t.setAttribute('class', 'q-num'); t.textContent = n; nums.appendChild(t);
+    });
+  })();
+  var Q = { hour: $('q-hour'), min: $('q-min'), dig: $('q-digital'), light: $('q-light'), after: $('q-after'), wave: $('q-wave'),
+            notes: Array.prototype.slice.call(document.querySelectorAll('.q-note')) };
+  var bars = [], BLIP = 0;
+  (function () {
+    var n = innerWidth < 700 ? 44 : 96; BLIP = Math.round(n * 0.62);
+    var seed = 7;
+    for (var i = 0; i < n; i++) {
+      seed = (seed * 9301 + 49297) % 233280;
+      var r = seed / 233280, env = 0.45 + 0.55 * Math.abs(Math.sin(i * 0.37) * Math.cos(i * 0.11));
+      var b = document.createElement('i'); b.style.setProperty('--a', (0.12 + 0.88 * r * env).toFixed(3));
+      if (i === BLIP) b.className = 'is-blip';
+      Q.wave.appendChild(b); bars.push(b);
+    }
+  })();
+  // ngưỡng tắt của từng tiếng động, theo thứ tự trên trang
+  var NOTE_T = [0.06, 0.13, 0.2, 0.27, 0.34, 0.42, 0.5];
+  function drawQuiet(p) {
+    var t = clamp01((p - 0.03) / 0.72);
+    var minutes = t * 120;
+    Q.min.setAttribute('transform', 'rotate(' + (minutes * 6).toFixed(2) + ')');
+    Q.hour.setAttribute('transform', 'rotate(' + (270 + minutes * 0.5).toFixed(2) + ')');
+    var m = Math.round(minutes / 5) * 5, txt = (9 + Math.floor(m / 60)) + ':' + ('0' + (m % 60)).slice(-2);
+    if (Q.dig.textContent !== txt) Q.dig.textContent = txt;
+    Q.light.style.transform = 'translate3d(' + ((t - 0.5) * 50).toFixed(2) + '%,0,0)';
+    Q.notes.forEach(function (n, i) {
+      var s = smooth((p - NOTE_T[i]) / 0.05), f = smooth((p - NOTE_T[i] - 0.05) / 0.07);
+      n.style.setProperty('--s', s.toFixed(3));
+      n.style.opacity = (1 - f).toFixed(3);
+      n.style.transform = 'rotate(var(--r)) translate3d(0,' + (-f * 26).toFixed(1) + 'px,0)';
+    });
+    Q.wave.style.setProperty('--amp', (1 - smooth((p - 0.04) / 0.56)).toFixed(3));
+    var blip = Math.sin(Math.PI * clamp01((p - 0.8) / 0.08));
+    Q.wave.style.setProperty('--blip', (blip * 0.7).toFixed(3));
+    Q.after.style.opacity = smooth((p - 0.76) / 0.08).toFixed(3);
+  }
+  if (reduce) {
+    Q.dig.textContent = '9:00 đến 11:00';
+    Q.min.setAttribute('transform', 'rotate(0)'); Q.hour.setAttribute('transform', 'rotate(330)');
+    Q.notes.forEach(function (n) { n.style.setProperty('--s', '1'); n.style.opacity = '0.45'; });
+    Q.wave.style.setProperty('--amp', '0.04');
+  } else drawQuiet(0);
+
+  /* ============================================ frontispiece: các lớp */
+  var hero = $('top');
+  var L = { far: $('fx-far'), glass: $('fx-glass'), frame: $('fx-frame'), lamp: $('fx-lamp'), copy: $('fx-copy'), near: $('fx-near'), capwrap: $('fx-capwrap'), caption: $('fx-caption') };
+  var ptr = { x: 0, y: 0, tx: 0, ty: 0 };
+  if (!reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    addEventListener('pointermove', function (e) { ptr.tx = (e.clientX / innerWidth) * 2 - 1; ptr.ty = (e.clientY / innerHeight) * 2 - 1; }, { passive: true });
+  }
+  function drawHero(p) {
+    ptr.x += (ptr.tx - ptr.x) * 0.08; ptr.y += (ptr.ty - ptr.y) * 0.08;
+    var px = ptr.x, py = ptr.y, e = easeOut(p), vh = innerHeight / 100;
+    L.far.style.transform = 'translate3d(' + (px * -6).toFixed(2) + 'px,' + (py * -4 - p * 2 * vh).toFixed(2) + 'px,0) scale(' + (1.14 - 0.14 * e).toFixed(4) + ')';
+    L.glass.style.transform = 'translate3d(' + (px * -12).toFixed(2) + 'px,' + (py * -8 - p * 14 * vh).toFixed(2) + 'px,0) scale(1.08)';
+    L.glass.style.opacity = (0.5 * (1 - smooth((p - 0.3) / 0.5))).toFixed(3);
+    L.frame.style.transform = 'translate3d(' + (px * -16).toFixed(2) + 'px,' + (py * -10).toFixed(2) + 'px,0) scale(' + (1 + 1.25 * e).toFixed(4) + ')';
+    L.frame.style.opacity = (1 - smooth((p - 0.42) / 0.36)).toFixed(3);
+    L.lamp.style.opacity = (1 - smooth(p / 0.6)).toFixed(3);
+    L.copy.style.transform = 'translate3d(' + (px * -10).toFixed(2) + 'px,' + (-p * 16 * vh).toFixed(2) + 'px,0)';
+    L.copy.style.opacity = (1 - smooth((p - 0.12) / 0.34)).toFixed(3);
+    L.near.style.transform = 'translate3d(' + (px * -28).toFixed(2) + 'px,' + (py * -14 + e * 62 * vh).toFixed(2) + 'px,0) scale(' + (1 + 0.14 * p).toFixed(4) + ')';
+    var c = smooth((p - 0.6) / 0.2);
+    L.capwrap.style.opacity = c.toFixed(3); L.caption.style.opacity = c.toFixed(3);
+    L.caption.style.transform = 'translate3d(0,' + ((1 - c) * 14).toFixed(1) + 'px,0)';
+  }
+
+  /* ======================================= bốn cách mở ảnh cho bốn chương */
+  var slats = $('slats'), SL = [];
+  (function () {
+    var src = 'https://images.unsplash.com/photo-1660913383087-b8bdc0bf7768?auto=format&fit=crop&w=1400&q=72';
+    var n = innerWidth < 700 ? 5 : 7;
+    for (var i = 0; i < n; i++) {
+      var d = document.createElement('div'); d.className = 'slat'; d.style.setProperty('--i', i); d.style.setProperty('--n', n);
+      var im = document.createElement('img'); im.src = src; im.alt = ''; im.loading = 'lazy'; im.setAttribute('aria-hidden', 'true');
+      d.appendChild(im); slats.insertBefore(d, slats.querySelector('figcaption')); SL.push(d);
+    }
+  })();
+  var openings = Array.prototype.slice.call(document.querySelectorAll('[data-open]')).map(function (el) {
+    return { el: el, kind: el.getAttribute('data-open'), fig: el.querySelector('.opening__fig') };
+  });
+  function drawOpening(o) {
+    var r = o.el.getBoundingClientRect(), vh = innerHeight;
+    if (r.bottom < -50 || r.top > vh + 50) return;
+    // 0 khi mép trên chạm đáy màn hình, 1 khi chương phủ kín màn hình
+    var e = clamp01((vh - r.top) / (vh * 0.92));
+    var f = o.fig;
+    if (o.kind === 'lamp') {
+      f.querySelector('.media').style.transform = 'scale(' + (1.28 - 0.28 * easeOut(e)).toFixed(4) + ')';
+      f.querySelector('.dim').style.opacity = (0.85 * (1 - smooth((e - 0.2) / 0.7))).toFixed(3);
+    } else if (o.kind === 'slats') {
+      SL.forEach(function (s, i) {
+        var k = easeOut((e - i * 0.06) / 0.55), dir = i % 2 ? 1 : -1;
+        s.style.transform = 'translate3d(0,' + (dir * (1 - k) * 70).toFixed(2) + '%,0)';
+        s.style.opacity = (0.2 + 0.8 * k).toFixed(3);
+      });
+    } else if (o.kind === 'window') {
+      var k = easeOut((e - 0.1) / 0.75), a = (1 - k);
+      f.querySelector('.media').style.clipPath = 'inset(' + (22 * a).toFixed(2) + '% ' + (26 * a).toFixed(2) + '% ' + (22 * a).toFixed(2) + '% ' + (26 * a).toFixed(2) + '%)';
+      var sash = f.querySelector('.sash');
+      sash.style.transform = 'scale(' + (1 + 1.6 * k).toFixed(4) + ')';
+      sash.style.opacity = (1 - smooth((k - 0.35) / 0.4)).toFixed(3);
+    } else if (o.kind === 'snap') {
+      var after = clamp01((-r.top) / vh);
+      f.querySelector('.media').style.transform = 'translate3d(0,' + ((e - 1) * 6 - after * 6).toFixed(2) + '%,0)';
+      var k2 = easeOut((e - 0.35) / 0.55), snap = f.querySelector('.snap');
+      snap.style.transform = 'translate3d(' + ((1 - k2) * -40).toFixed(1) + 'px,' + ((1 - k2) * 140).toFixed(1) + 'px,0) rotate(' + (-3 + (1 - k2) * 14).toFixed(2) + 'deg)';
+      snap.style.opacity = k2.toFixed(3);
+    }
+  }
+
+  /* ========================================== folio, ruy băng, trạng thái */
+  var folio = $('folio'), ribbon = $('ribbon');
+  var chapters = Array.prototype.slice.call(document.querySelectorAll('[data-chapter]'));
+  var inks = Array.prototype.slice.call(document.querySelectorAll('[data-ink]'));
+  var lastKey = '';
+  function tick() {
+    var vh = innerHeight, y = scrollY, max = document.documentElement.scrollHeight - vh;
+    ribbon.style.setProperty('--read', max > 0 ? clamp01(y / max).toFixed(4) : 0);
+    var hr = hero.getBoundingClientRect(), inHero = hr.bottom > vh * 0.4;
+    document.body.classList.toggle('in-hero', inHero);
+    folio.classList.toggle('is-on', !inHero);
+    if (!reduce) {
+      if (hr.bottom > 0) drawHero(clamp01(parseFloat(hero.style.getPropertyValue('--sc-p')) || 0));
+      openings.forEach(drawOpening);
+    }
+    var mid = vh * 0.5;
+    for (var i = 0; i < chapters.length; i++) {
+      var r = chapters[i].getBoundingClientRect();
+      if (r.top <= mid && r.bottom > mid) {
+        var key = chapters[i].getAttribute('data-chapter');
+        if (key !== lastKey) { lastKey = key; var kv = key.split('|'); $('folio-no').textContent = kv[0]; $('folio-title').textContent = kv[1]; }
+        break;
+      }
+    }
+    var fx = 24, fy = 40;
+    document.body.classList.toggle('on-ink', inks.some(function (el) { var r = el.getBoundingClientRect(); return r.top <= fy && r.bottom > fy && r.left <= fx && r.right > fx; }));
+    var qp = parseFloat(quietAct.style.getPropertyValue('--sc-p')) || 0, qr = quietAct.getBoundingClientRect();
+    document.body.classList.toggle('is-quiet', qr.top <= 1 && qr.bottom >= vh - 1 && qp > 0.03 && qp < 0.97);
+    if (!reduce && qr.bottom > 0 && qr.top < vh) drawQuiet(qp);
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
